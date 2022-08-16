@@ -1,0 +1,53 @@
+/**
+ *  Issue an interrupt when User button goes high (pressed and released)
+ *
+ *  (Page references were added for F407 Discovery Board)
+ *  User & WAKE-UP Button is connected to PA0 (GPIO Port A and 0th pin) - Schematic Page 31
+ *
+ *  How GPIO pins interrupt the processor?
+ *  (How the vendor delivers the GPIO interrupt to the processor?)
+ *
+ *  Go to Interrupts and events > External interrupt/event controller (EXTI) >
+ *  External interrupt/event line mapping - Reference Manual Page 383
+ *
+ *  EXTI engine hanging on APB Bus - Reference Manual Page 381, Block Diagram - DataSheet Page 16
+ *  EXTI derives the clock from PCLK2 (P CLOCK 2)
+ *  EXTI finally connects to NVIC interrupt controller
+ *  EXTI is giving its 23 lines to NVIC (23 different IRQ numbers)
+ *  Look into Vector table to confirm 23 lines are there - Reference Manual Page 373
+ *  (i.e. RTC Wakeup interrupt is not connected to NVIC directly but through EXTI Line - Reference Manual Page 373)
+ *  (i.e. USB On-The-Go FS OTG_FS WKUP Wakeup through EXTI line interrupt - Reference Manual Page 375)
+ *
+ *  GPIO Pins delivers their interrupt to NVIC through EXTI - Reference Manual Page 383
+ *  PA0 to PI0 are connected to EXTI0 and register to look for is SYSCFG_EXTICR0
+ *  PA1 to PI1 -> EXTI1 and register SYSCFG_EXTICR1
+ *  ... ...
+ *  PA15 to PI15 -> EXTI15 and register SYSCFG_EXTICR15
+ *
+ *  (USER button connected to PA0 -> EXTI10 (SYSCFG_EXTICR1) -> NVIC)
+ *
+ *  [Summary]: Button interrupt
+ *  1- The button is connected to a GPIO pin of the microcontroller
+ *  2- The GPIO pin should be configured to Input Mode
+ *  3- The link between a GPIO port and the relevant EXTI line must be
+ *     established using the SYSCFG_EXTICRx register
+ *  4- Configure the trigger detection (falling edge/rising edge/both) for relevant
+ *     EXTI line (done via EXTI controller register)
+ *  5- Implement the handler to service the interrupt
+ *
+ *  EXTI doesn't poke the NVIC unless you unmask one of the register (i.e. Pending request register
+ *  Interrupt mask register, Rising trigger selection register etc)
+ *
+ */
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+int main(void)
+{
+    /* Loop forever */
+	for(;;);
+}

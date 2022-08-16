@@ -1,0 +1,29 @@
+/**
+ *  Issue an interrupt when User button goes high (pressed and released)
+ *
+ *  (Page references were added for F407 Discovery Board)
+ *  User & WAKE-UP Button is connected to PA0 (GPIO Port A and 0th pin) - Schematic Page 31
+ *
+ *  How GPIO pins interrupt the processor?
+ *  (How the vendor delivers the GPIO interrupt to the processor?)
+ *
+ *  Go to Interrupts and events > External interrupt/event controller (EXTI) >
+ *  External interrupt/event line mapping - Reference Manual Page 383
+ *
+ *  EXTI engine hanging on APB Bus - Reference Manual Page 381, Block Diagram at DataSheet Page 16
+ *  EXTI derives the clock from PCLK2 (P CLOCK 2)
+ *  EXTI finally connects to NVIC interupt controller
+ *
+ */
+
+#include <stdint.h>
+
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
+
+int main(void)
+{
+    /* Loop forever */
+	for(;;);
+}
