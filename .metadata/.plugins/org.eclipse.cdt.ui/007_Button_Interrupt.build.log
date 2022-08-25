@@ -1,0 +1,10 @@
+08:36:38 **** Incremental Build of configuration Debug for project 007_Button_Interrupt ****
+make -j3 all 
+arm-none-eabi-size   007_Button_Interrupt.elf 
+   text	   data	    bss	    dec	    hex	filename
+   3976	    132	   1596	   5704	   1648	007_Button_Interrupt.elf
+Finished building: default.size.stdout
+ 
+
+08:36:38 Build Finished. 0 errors, 0 warnings. (took 286ms)
+

@@ -1,0 +1,278 @@
+#include "stm32f407xx_gpio_driver.h"
+
+// Peripheral clock setup
+
+/*********************************************************************
+ * @brief            - Enables or disable peripheral clock for
+ *                     the given GPIO port
+ *
+ * @Param[in]        - Base address of the GPIO peripheral
+ * @Param[in]        - Enable or Disable macro (i.e. ENABLE, DISABLE)
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_PCLK_Ctrl (GPIO_RegDef_t *gpiox, uint8_t en_or_di){
+	if(en_or_di == ENABLE) {
+		if(gpiox==GPIOA){
+			GPIOA_PCLK_EN();
+		}else if(gpiox==GPIOB){
+			GPIOB_PCLK_EN();
+		}else if(gpiox==GPIOC){
+			GPIOC_PCLK_EN();
+		}else if(gpiox==GPIOD){
+			GPIOD_PCLK_EN();
+		}else if(gpiox==GPIOE){
+			GPIOE_PCLK_EN();
+		}else if(gpiox==GPIOF){
+			GPIOF_PCLK_EN();
+		}else if(gpiox==GPIOG){
+			GPIOG_PCLK_EN();
+		}else if(gpiox==GPIOH){
+			GPIOH_PCLK_EN();
+		}else if(gpiox==GPIOI){
+			GPIOI_PCLK_EN();
+		}
+	} else {
+		//TODO
+	}
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_Init (GPIO_Handle_t *gpio_handle){
+
+	uint32_t temp = 0;
+
+	// 1. configure the mode of gpio pin
+	if(gpio_handle->GPIO_PinConfig.gpio_pin_mode <= GPIO_MODE_ANALOG) {
+		// none interrupt mode
+		temp = (gpio_handle->GPIO_PinConfig.gpio_pin_mode << (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
+		gpio_handle->GPIOx->MODER &= ~(0x3 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+		gpio_handle->GPIOx->MODER |= temp;
+	} else {
+		// interrupt mode
+		if(gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_FT){
+			// configure the FTSR (Falling trigger selection register)
+			// FTSR is the register of EXTI
+			EXTI->FTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			// clear the corresponding RTSR bit
+			EXTI->RTSR &= ~(1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+		}else if(gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_RT){
+			// configure RTSR (Rising trigger selection register
+			EXTI->RTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			// clear the corresponding FTSR bit
+			EXTI->FTSR &= ~(1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+		}else if(gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_RFT){
+			// configure both FTSR and RTSR
+			EXTI->FTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			EXTI->RTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+		}
+		//2. configure the GPIO port selection in SYSCGF_EXTICR (Sys Config EXTI Control Register)
+
+		//3. enable the EXTI interrupt delivery using IMR (Interrupt Mask Register)
+	}
+
+	temp = 0;
+
+	// 2. configure the speed
+	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_speed << (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
+	gpio_handle->GPIOx->OSPEEDR &= ~(0x3 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+	gpio_handle->GPIOx->OSPEEDR |= temp;
+
+	temp = 0;
+
+	// 3. configure the pu-pd settings
+	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_pu_pd_control << (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
+	gpio_handle->GPIOx->PUPDR &= ~(0x3 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+	gpio_handle->GPIOx->PUPDR |= temp;
+
+	temp = 0;
+
+	// 4. configure the optype
+	temp = gpio_handle->GPIO_PinConfig.gpio_pin_op_type << gpio_handle->GPIO_PinConfig.gpio_pin_number;
+	gpio_handle->GPIOx->OTYPER &= ~(0x1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+	gpio_handle->GPIOx->OTYPER |= temp;
+
+	temp = 0;
+
+	// 5. configure the alt functionality
+	if(gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_ALTFN){
+		uint8_t temp1, temp2;
+		temp1 = gpio_handle->GPIO_PinConfig.gpio_pin_number / 8;
+		temp2 = gpio_handle->GPIO_PinConfig.gpio_pin_number % 8;
+		gpio_handle->GPIOx->AFR[temp1] &= ~(0xFF << (4 * temp2));
+		gpio_handle->GPIOx->AFR[temp1] |= (gpio_handle->GPIO_PinConfig.gpio_pin_alt_fun << (4 * temp2));
+
+	}
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_DeInit (GPIO_RegDef_t *gpiox){
+
+	if(gpiox==GPIOA){
+		GPIOA_REG_RESET();
+	}else if(gpiox==GPIOB){
+		GPIOB_REG_RESET();
+	}else if(gpiox==GPIOC){
+		GPIOC_REG_RESET();
+	}else if(gpiox==GPIOD){
+		GPIOD_REG_RESET();
+	}else if(gpiox==GPIOE){
+		GPIOE_REG_RESET();
+	}else if(gpiox==GPIOF){
+		GPIOF_REG_RESET();
+	}else if(gpiox==GPIOG){
+		GPIOG_REG_RESET();
+	}else if(gpiox==GPIOH){
+		GPIOH_REG_RESET();
+	}else if(gpiox==GPIOI){
+		GPIOI_REG_RESET();
+	}
+
+}
+
+// Data read and write
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+uint8_t GPIO_ReadFromInputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+	uint8_t value;
+	// shift right by i.e. 8 times if pin number is 8
+	// and then read the 0th bit (lsb) and mask all
+	// other bit positions with 0x00000001 except 0th bit
+	// which we want to read
+	value = (uint8_t)((gpiox->IDR >> pin_number) &  0x00000001);
+	return value;
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *gpiox){
+	uint16_t value;
+	value = (uint16_t)gpiox->IDR;
+	return value;
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_WriteToOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number, uint8_t value){
+	if(value==GPIO_PIN_SET){
+		// write 1 to the output data register at the bit field
+		// correspond to the pin number
+		gpiox->ODR |= (1 << pin_number);
+	}else{
+		gpiox->ODR &= ~(1 << pin_number);
+	}
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_WriteToOutputPort (GPIO_RegDef_t *gpiox, uint16_t value){
+	gpiox->ODR = value;
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_ToggleOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+	gpiox->ODR ^= (1 << pin_number);
+}
+
+// IRQ Configuration and ISR handling
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_IRQConfig (uint8_t irq_number, uint8_t irq_priority, uint8_t en_or_di){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_IRQHandling (uint8_t pin_number){
+
+}

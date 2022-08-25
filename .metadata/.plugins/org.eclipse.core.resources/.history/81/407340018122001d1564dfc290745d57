@@ -1,0 +1,243 @@
+#include "stm32f407xx_gpio_driver.h"
+
+// Peripheral clock setup
+
+/*********************************************************************
+ * @brief            - Enables or disable peripheral clock for
+ *                           the given GPIO port
+ *
+ * @Param[in]        - Base address of the GPIO peripheral
+ * @Param[in]        - Enable or Disable macro (i.e. ENABLE, DISABLE)
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_PCLK_Ctrl (GPIO_RegDef_t *gpiox, uint8_t en_or_di){
+	if(en_or_di == ENABLE) {
+
+		switch(gpiox){
+		case GPIOA:
+			GPIOA_PCLK_EN();
+			break;
+		case GPIOB:
+			GPIOB_PCLK_EN();
+			break;
+		case GPIOC:
+			GPIOC_PCLK_EN();
+			break;
+		case GPIOD:
+			GPIOD_PCLK_EN();
+			break;
+		case GPIOE:
+			GPIOE_PCLK_EN();
+			break;
+		case GPIOF:
+			GPIOF_PCLK_EN();
+			break;
+		case GPIOG:
+			GPIOG_PCLK_EN();
+			break;
+		case GPIOH:
+			GPIOH_PCLK_EN();
+			break;
+		default:
+			GPIOI_PCLK_EN();
+		}
+
+	} else {
+
+		switch(gpiox){
+		case GPIOA:
+			GPIOA_PCLK_DI();
+			break;
+		case GPIOB:
+			GPIOB_PCLK_DI();
+			break;
+		case GPIOC:
+			GPIOC_PCLK_DI();
+			break;
+		case GPIOD:
+			GPIOD_PCLK_DI();
+			break;
+		case GPIOE:
+			GPIOE_PCLK_DI();
+			break;
+		case GPIOF:
+			GPIOF_PCLK_DI();
+			break;
+		case GPIOG:
+			GPIOG_PCLK_DI();
+			break;
+		case GPIOH:
+			GPIOH_PCLK_DI();
+			break;
+		default:
+			GPIOI_PCLK_DI();
+		}
+	}
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_Init (GPIO_Handle_t *gpio_handle){
+
+	uint32_t temp = 0;
+
+	// 1. configure the mode of gpio pin
+	if(gpio_handle->GPIO_PinConfig.gpio_pin_mode <= GPIO_MODE_ANALOG) {
+		// none interrupt mode
+		temp = (gpio_handle->GPIO_PinConfig.gpio_pin_mode << (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
+		gpio_handle->GPIOx->MODER = temp;
+	} else {
+		// interrupt mode
+	}
+
+	temp = 0;
+
+	// 2. configure the speed
+	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_speed << (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
+	gpio_handle->GPIOx->OSPEEDR = temp;
+
+	temp = 0;
+
+	// 3. configure the pu-pd settings
+
+	// 4. configure the optype
+
+	// 5. configure the alt functionality
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_DeInit (GPIO_RegDef_t *gpiox){
+
+}
+
+// Data read and write
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+uint8_t GPIO_ReadFromInputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *gpiox){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_WriteToOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number, uint8_t value){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_WriteToOutputPort (GPIO_RegDef_t *gpiox, uint16_t value){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_ToggleOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+
+}
+
+// IRQ Configuration and ISR handling
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_IRQConfig (uint8_t irq_number, uint8_t irq_priority, uint8_t en_or_di){
+
+}
+
+/*********************************************************************
+ * @brief            -
+ *
+ * @Param[in]        -
+ * @Param[in]        -
+ * @Param[in]        -
+ *
+ * @return           -
+ *
+ * @Note             -
+ */
+void GPIO_IRQHandling (uint8_t pin_number){
+
+}

@@ -1,0 +1,11 @@
+#include "stm32f407xx.h"
+#include "stm32f407xx_gpio_driver.h"
+
+int
+main(void) {
+
+	GPIO_Handle_t gpio;
+	gpio.GPIOx = GPIOD;
+	gpio.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_12;
+	return 0;
+}

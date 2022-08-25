@@ -84,7 +84,7 @@ int main(void)
 }
 
 // configuration of gpio pin, exti edge detection, masking and NVIC irq enable
-boid button_init(void) {
+void button_init(void) {
 	// GPIOA clock enable
 	*clk_ctrl_reg |= (1 << 0);
 

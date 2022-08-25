@@ -1,9 +1,0 @@
-#include <stdint.h>
-
-
-int main(void)
-{
-	// 01. Configure RCC_CFGR register (MCO1 21, 22 bit position)
-    /* Loop forever */
-	for(;;);
-}

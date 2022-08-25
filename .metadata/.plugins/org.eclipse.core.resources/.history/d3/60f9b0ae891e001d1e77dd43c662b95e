@@ -1,0 +1,59 @@
+#include "stm32f407xx_gpio_driver.h"
+
+// Peripheral clock setup
+
+/*********************************************************************
+ * @fn                     - GPIO_Init
+ *
+ * @brief                  -
+ *
+ * @Param[in]              -
+ * @Param[in]              -
+ * @Param[in]              -
+ *
+ * @return                 -
+ *
+ * @Note                   -
+ */
+void GPIO_PCLK_Ctrl (GPIO_RegDef_t *gpiox, uint8_t en_or_di){
+
+}
+
+// Initialise and De-intialise GPIOs
+void GPIO_Init (GPIO_Handle_t *gpio_handle){
+
+}
+
+void GPIO_DeInit (GPIO_RegDef_t *gpiox){
+
+}
+
+// Data read and write
+uint8_t GPIO_ReadFromInputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+
+}
+
+uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *gpiox){
+
+}
+
+void GPIO_WriteToOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number, uint8_t value){
+
+}
+
+void GPIO_WriteToOutputPort (GPIO_RegDef_t *gpiox, uint16_t value){
+
+}
+
+void GPIO_ToggleOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number){
+
+}
+
+// IRQ Configuration and ISR handling
+void GPIO_IRQConfig (uint8_t irq_number, uint8_t irq_priority, uint8_t en_or_di){
+
+}
+
+void GPIO_IRQHandling (uint8_t pin_number){
+
+}
