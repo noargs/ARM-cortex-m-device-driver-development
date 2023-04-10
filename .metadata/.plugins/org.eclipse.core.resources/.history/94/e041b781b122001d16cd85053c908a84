@@ -1,9 +1,0 @@
-#include "stm32f407xx.h"
-
-int
-main(void) {
-
-	GPIO_Handle_t gpio_led;
-	gpio_led.GPIOx = GPIOD;
-	return 0;
-}

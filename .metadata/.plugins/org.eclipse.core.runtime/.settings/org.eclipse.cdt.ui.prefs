@@ -1,5 +1,13 @@
+c_comment_task_tag=162,150,135
+c_multi_line_comment=126,125,126
+c_single_line_comment=126,126,127
 eclipse.preferences.version=1
+inactiveCodeColor=78,77,78
+org.eclipse.cdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates><template autoinsert\="false" context\="org.eclipse.cdt.ui.text.codetemplates.filecomment_context" deleted\="false" description\="Comment for created C/C++ files" enabled\="true" id\="org.eclipse.cdt.ui.text.codetemplates.filecomment" name\="filecomment">/*\n * created ${file_name} on ${date} by ${user} - (github.com/noargs)\n */\n</template><template autoinsert\="false" context\="org.eclipse.core.runtime.text.contenttype_context" deleted\="false" description\="Default template for newly created text files" enabled\="true" id\="org.eclipse.cdt.ui.text.codetemplates.textfile" name\="Default text file template">created ${file_name} on ${date} by ${user} - (github.com/noargs)\n\n</template></templates>
+sourceHoverBackgroundColor=47,47,47
+spelling_ignore_string_literals=false
 spelling_locale=en_GB
 spelling_locale_initialized=true
+spelling_user_dictionary_encoding=
 useAnnotationsPrefPage=true
 useQuickDiffPrefPage=true
