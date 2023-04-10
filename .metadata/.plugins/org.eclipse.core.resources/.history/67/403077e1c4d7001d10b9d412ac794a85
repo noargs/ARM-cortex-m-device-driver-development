@@ -10,14 +10,8 @@
 
 int main(void)
 {
-
-	// enable the rcc peripheral clock
-	uint32_t *p_rcc_apb2enr = (uint32_t*) RCC_APB2ENR_ADDR;
-	*p_rcc_apb2enr |= (1 << 8);
-
-	// modify the adc cr1 register
 	uint32_t *p_adc_ctrl_reg = (uint32_t*) ADC_CR1_REG_ADDR;
-	*p_adc_ctrl_reg |= (1 << 8);
+	*p_adc_ctrl_reg |= ( 1 << 8 );
 
 
 	for(;;);

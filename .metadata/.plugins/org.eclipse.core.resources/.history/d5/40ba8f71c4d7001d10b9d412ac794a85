@@ -1,0 +1,16 @@
+#include <stdint.h>
+
+#define ADC_BASE_ADDR         0x40012000UL
+
+#define ADC_CR1_OFFSET        0x04
+
+#define ADC_CR1_REG_ADDR      (ADC_BASE_ADDR + ADC_CR1_OFFSET)
+
+int main(void)
+{
+	uint32_t *p_adc_ctrl_reg = (uint32_t*) ADC_CR1_REG_ADDR;
+	*p_adc_ctrl_reg |= ( 1 << 8 );
+
+
+	for(;;);
+}

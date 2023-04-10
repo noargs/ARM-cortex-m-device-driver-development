@@ -1107,3 +1107,16 @@ java.lang.Exception: The project description file (.project) for '005_HSI_Measur
 
 !ENTRY org.eclipse.cdt.core 1 0 2023-04-10 17:28:57.720
 !MESSAGE Indexed 'stm32f4xx_drivers' (4 sources, 55 headers) in 0.467 sec: 2,100 declarations; 3,624 references; 0 unresolved inclusions; 1 syntax errors; 3 unresolved names (0.052%)
+!SESSION 2023-04-10 17:34:26.787 -----------------------------------------------
+eclipse.buildId=Version 1.12.0
+java.version=11.0.17
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_GB
+Framework arguments:  -keyring /Users/nahl/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/nahl/.eclipse_keyring
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-04-10 17:34:52.310
+!MESSAGE Log4j2 initialized with config file /Users/nahl/dev/c/embedded/ARM_Cortex_M3M4_Device_Driver_Development/.metadata/.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-04-10 17:35:11.265
+!MESSAGE Started RMI Server, listening on port 41337
