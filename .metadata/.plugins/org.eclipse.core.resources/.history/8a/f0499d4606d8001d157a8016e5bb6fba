@@ -20,7 +20,7 @@ int main(void)
 	uint32_t *rcc_cfgr_reg = (uint32_t*) RCC_CFGR_REG_ADDR;
 	*rcc_cfgr_reg &= ~(0x3 << 21);  // clear 21, 22 bit position
 
-	// 01a. Configure MCO1 prescaler (0b110 means 25 and 26 bit) Reference Manual - Page 228
+	// 01a. Configure MCO1 prescaler (100 means divide by 2) Reference Manual - Page 228
 	*rcc_cfgr_reg |= (1 << 25);
 	*rcc_cfgr_reg |= (1 << 26);
 
