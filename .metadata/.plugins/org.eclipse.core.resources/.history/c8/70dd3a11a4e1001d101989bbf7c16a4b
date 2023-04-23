@@ -32,7 +32,5 @@ void SPI_PCLK_Ctrl (SPI_RegDef_t *spix, uint8_t en_or_di);
 void SPI_Init (SPI_Handle_t *spi_handle);
 void SPI_DeInit (SPI_RegDef_t *spix);
 
-// Data send and receive
-
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */
