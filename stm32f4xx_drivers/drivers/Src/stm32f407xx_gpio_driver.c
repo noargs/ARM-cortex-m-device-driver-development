@@ -35,7 +35,25 @@ void GPIO_PCLK_Ctrl(GPIO_RegDef_t *gpiox, uint8_t en_or_di) {
 			GPIOI_PCLK_EN();
 		}
 	} else {
-		//TODO
+		if (gpiox == GPIOA) {
+			GPIOA_PCLK_DI();
+		} else if (gpiox == GPIOB) {
+			GPIOB_PCLK_DI();
+		} else if (gpiox == GPIOC) {
+			GPIOC_PCLK_DI();
+		} else if (gpiox == GPIOD) {
+			GPIOD_PCLK_DI();
+		} else if (gpiox == GPIOE) {
+			GPIOE_PCLK_DI();
+		} else if (gpiox == GPIOF) {
+			GPIOF_PCLK_DI();
+		} else if (gpiox == GPIOG) {
+			GPIOG_PCLK_DI();
+		} else if (gpiox == GPIOH) {
+			GPIOH_PCLK_DI();
+		} else if (gpiox == GPIOI) {
+			GPIOI_PCLK_DI();
+		}
 	}
 
 }
@@ -95,7 +113,7 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 		//   Which GPIO port should handle by which EXTIx line
 		uint8_t temp1 = gpio_handle->GPIO_PinConfig.gpio_pin_number / 4;
 		uint8_t temp2 = gpio_handle->GPIO_PinConfig.gpio_pin_number % 4;
-		uint8_t portcode = GPIO_BASEADDR_TO_CODE(gpio_handle->GPIOx); // TODO
+		uint8_t portcode = GPIO_BASEADDR_TO_CODE(gpio_handle->GPIOx);
 		SYSCFG_PCLK_EN();
 		SYSCFG->EXTICR[temp1] = portcode << (temp2 * 4);
 
@@ -103,27 +121,28 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 		EXTI->IMR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
 	}
 
-	temp = 0;
+
 
 	// 2. configure the speed
+	temp = 0;
 	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_speed
 			<< (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
 	gpio_handle->GPIOx->OSPEEDR &= ~(0x3
 			<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
 	gpio_handle->GPIOx->OSPEEDR |= temp;
 
-	temp = 0;
 
 	// 3. configure the pu-pd settings
+	temp = 0;
 	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_pu_pd_control
 			<< (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
 	gpio_handle->GPIOx->PUPDR &= ~(0x3
 			<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
 	gpio_handle->GPIOx->PUPDR |= temp;
 
-	temp = 0;
 
 	// 4. configure the optype
+	temp = 0;
 	temp = gpio_handle->GPIO_PinConfig.gpio_pin_op_type
 			<< gpio_handle->GPIO_PinConfig.gpio_pin_number;
 	gpio_handle->GPIOx->OTYPER &= ~(0x1
@@ -137,7 +156,7 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 		uint8_t temp1, temp2;
 		temp1 = gpio_handle->GPIO_PinConfig.gpio_pin_number / 8;
 		temp2 = gpio_handle->GPIO_PinConfig.gpio_pin_number % 8;
-		gpio_handle->GPIOx->AFR[temp1] &= ~(0xFF << (4 * temp2));
+		gpio_handle->GPIOx->AFR[temp1] &= ~(0xF << (4 * temp2));
 		gpio_handle->GPIOx->AFR[temp1] |=
 				(gpio_handle->GPIO_PinConfig.gpio_pin_alt_fun << (4 * temp2));
 
@@ -215,7 +234,7 @@ uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *gpiox, uint8_t pin_number) {
  * @Note             -
  */
 uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *gpiox) {
-	uint16_t value;
+	uint16_t value; // only bother reading 16 bits as rest of the 16 bits are reserved.
 	value = (uint16_t) gpiox->IDR;
 	return value;
 }
@@ -269,6 +288,7 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *gpiox, uint16_t value) {
  * @Note             -
  */
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *gpiox, uint8_t pin_number) {
+//	gpiox->ODR = gpiox->ODR ^ (1 << pin_number);
 	gpiox->ODR ^= (1 << pin_number);
 }
 
@@ -287,28 +307,27 @@ void GPIO_IRQInterruptConfig(uint8_t irq_number, uint8_t en_or_di) {
 	if (en_or_di == ENABLE) {
 		if (irq_number <= 31) {
 			// Program ISER0 register Interrupt Set-enable register @ page 220 [Cortex M4 Generic User Guide]
-			*NVIC_ISER0 |= ( 1 << irq_number );
+			*NVIC_ISER0 |= (1 << irq_number);
 		} else if (irq_number > 31 && irq_number < 64) {
 			// Program ISER1 register
-			*NVIC_ISER1 |= ( 1 << ( irq_number % 32 ) );
+			*NVIC_ISER1 |= (1 << (irq_number % 32));
 		} else if (irq_number >= 64 && irq_number < 96) {
 			// program ISER2 register
-			*NVIC_ISER2 |= ( 1 << ( irq_number % 64 ) );
+			*NVIC_ISER2 |= (1 << (irq_number % 64));
 		} else {
 			if (irq_number <= 31) {
 				// Program ICER0 register Interrupt Clear-enable register @ page 221 [Cortex M4 Generic User Guide]
-				*NVIC_ICER0 |= ( 1 << irq_number );
+				*NVIC_ICER0 |= (1 << irq_number);
 			} else if (irq_number > 31 && irq_number < 64) {
 				// Program ICER1 register
-				*NVIC_ICER1 |= ( 1 << ( irq_number % 32 ) );
+				*NVIC_ICER1 |= (1 << (irq_number % 32));
 			} else if (irq_number >= 64 && irq_number < 96) {
 				// program ICER2 register
-				*NVIC_ISER2 |= ( 1 << ( irq_number % 64 ) );
+				*NVIC_ISER2 |= (1 << (irq_number % 64));
 			}
 		}
 	}
 }
-
 
 /*********************************************************************
  * @brief            - there are 60 Priority registers (Interrupt Priority
@@ -323,13 +342,13 @@ void GPIO_IRQInterruptConfig(uint8_t irq_number, uint8_t en_or_di) {
  *
  * @return           - void
  */
-void GPIO_IRQPriorityConfig(uint8_t irq_number, uint8_t irq_priority) {
+void GPIO_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority) {
 	//1. find out the IPR register
 	uint8_t iprx = irq_number / 4;
 	uint8_t iprx_section = irq_number % 4;
 
-	uint8_t shift_by = ( 8 * iprx_section ) + (8 - NO_PR_BITS_IMPLEMENTED);
-	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (irq_priority << shift_by );
+	uint8_t shift_by = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+	*(NVIC_PR_BASE_ADDR + iprx) |= (irq_priority << shift_by);
 }
 
 /*********************************************************************
@@ -345,8 +364,8 @@ void GPIO_IRQPriorityConfig(uint8_t irq_number, uint8_t irq_priority) {
  */
 void GPIO_IRQHandling(uint8_t pin_number) {
 	// clear the EXTI priority PR register corresponding to the pin number
-	if(EXTI->PR & ( 1 << pin_number )) {
+	if (EXTI->PR & (1 << pin_number)) {
 		// clear the pending register, writing 1 to pending register will clear
-		EXTI->PR |= ( 1 << pin_number);
+		EXTI->PR |= (1 << pin_number);
 	}
 }

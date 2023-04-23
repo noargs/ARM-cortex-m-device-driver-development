@@ -1,4 +1,3 @@
-
 #include "stm32f407xx.h"
 
 int main(void) {
@@ -11,5 +10,7 @@ int main(void) {
 // @ "../Startup/startup_stm32f407vgtx.s"
 void EXT10_IRQHandler(void) {
 	// handle the interrupt
+	// pin number is provided from your application
+	// GPIO_IRQHandling() is implemented in Driver layer
 	GPIO_IRQHandling(0);
 }

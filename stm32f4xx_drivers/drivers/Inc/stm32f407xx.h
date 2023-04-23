@@ -31,7 +31,7 @@
 #define FLASH_BASEADDR                              0x08000000U
 #define SRAM1_BASEADDR                              0x20000000U         // first 112KB
 #define SRAM2_BASEADDR                              0x20001C00U         // 112 * 1024  = 114688 to Hex 1C00, 0x2000000 + 1C00 = 0x20001C00
-#define ROM_BASEADDR                                0x1FFF0000U
+#define ROM_BASEADDR                                0x1FFF0000U         // System memory (RM page:75)
 #define SRAM                                        SRAM1_BASEADDR
 
 
@@ -78,7 +78,10 @@
 #define USART6_BASEADDR                             (APB2PERIPH_BASEADDR + 0x1400)
 
 
-// peripheral register definition structure for GPIO
+// peripheral register definition structure for GPIO [RM Page:287]
+// below registers are specific to stm32f407 family
+// and it may be different in other families of ST
+// microcontroller
 typedef struct {
 	__vo uint32_t MODER;        // GPIO port mode register                             Address offset 0x00
 	__vo uint32_t OTYPER;       // GPIO port output type register                      Address offset 0x04
@@ -175,7 +178,7 @@ typedef struct {
 #define SYSCFG                                      ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 
-// Clock enable macros for GPIOx peripherals
+// Peripheral Clock enable macros `GPIOx peripheral clock enable`
 #define GPIOA_PCLK_EN()                             (RCC->AHB1ENR |= (1 << 0))
 #define GPIOB_PCLK_EN()                             (RCC->AHB1ENR |= (1 << 1))
 #define GPIOC_PCLK_EN()                             (RCC->AHB1ENR |= (1 << 2))
@@ -187,19 +190,19 @@ typedef struct {
 #define GPIOI_PCLK_EN()                             (RCC->AHB1ENR |= (1 << 8))
 
 
-// Clock enable macros for I2Cx peripherals
+// Peripheral Clock enable macros `I2Cx peripheral clock enable`
 #define I2C1_PCLK_EN()                              (RCC->APB1ENR |= (1 << 21))
 #define I2C2_PCLK_EN()                              (RCC->APB1ENR |= (1 << 22))
 #define I2C3_PCLK_EN()                              (RCC->APB1ENR |= (1 << 23))
 
 
-// Clock enable macros for SPIx peripherals
+// Peripheral Clock enable macros `SPIx peripheral clock enable`
 #define SPI1_PCLK_EN()                              (RCC->APB2ENR |= (1 << 12))
 #define SPI2_PCLK_EN()                              (RCC->APB1ENR |= (1 << 14))
 #define SPI3_PCLK_EN()                              (RCC->APB1ENR |= (1 << 15))
 
 
-// Clock enable macros for USARTx peripherals
+// Peripheral Clock enable macros `USARTx peripheral clock enable`
 #define USART1_PCLK_EN()                            (RCC->APB2ENR |= (1 << 4))
 #define USART2_PCLK_EN()                            (RCC->APB1ENR |= (1 << 17))
 #define USART3_PCLK_EN()                            (RCC->APB1ENR |= (1 << 18))
@@ -207,7 +210,7 @@ typedef struct {
 #define USART5_PCLK_EN()                            (RCC->APB1ENR |= (1 << 20))
 
 
-// Clock enable macros for SYSCFG peripherals
+// Peripheral Clock enable macros `SYSCFG peripheral clock enable`
 #define SYSCFG_PCLK_EN()                            (RCC->APB2ENR |= (1 << 14))
 
 

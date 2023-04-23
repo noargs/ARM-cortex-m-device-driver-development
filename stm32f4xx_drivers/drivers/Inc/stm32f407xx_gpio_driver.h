@@ -3,6 +3,13 @@
 
 #include "stm32f407xx.h"
 
+// Handle structure for GPIO pins
+typedef struct {
+	GPIO_RegDef_t    *GPIOx;          /* holds the base address of GPIO port to which pin belongs */
+	GPIO_PinConfig_t GPIO_PinConfig;  /* holds GPIO pin configuration settings */
+
+}GPIO_Handle_t;
+
 
 // Configuration structure for GPIO pins
 typedef struct {
@@ -13,15 +20,6 @@ typedef struct {
 	uint8_t gpio_pin_op_type;
 	uint8_t gpio_pin_alt_fun;
 }GPIO_PinConfig_t;
-
-
-
-// Handle structure for GPIO pins
-typedef struct {
-	GPIO_RegDef_t *GPIOx;
-	GPIO_PinConfig_t GPIO_PinConfig;
-
-}GPIO_Handle_t;
 
 
 // @GPIO_PIN_NUMBERS
@@ -95,7 +93,7 @@ void GPIO_ToggleOutputPin (GPIO_RegDef_t *gpiox, uint8_t pin_number);
 
 // IRQ Configuration and ISR handling
 void GPIO_IRQInterruptConfig (uint8_t irq_number, uint8_t en_or_di);
-void GPIO_IRQPriorityConfig (uint8_t irq_number, uint8_t irq_priority);
+void GPIO_IRQPriorityConfig (uint8_t irq_number, uint32_t irq_priority);
 void GPIO_IRQHandling (uint8_t pin_number);
 
 
