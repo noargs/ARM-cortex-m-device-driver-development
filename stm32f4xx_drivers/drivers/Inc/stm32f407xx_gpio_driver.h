@@ -3,13 +3,6 @@
 
 #include "stm32f407xx.h"
 
-// Handle structure for GPIO pins
-typedef struct {
-	GPIO_RegDef_t    *GPIOx;          /* holds the base address of GPIO port to which pin belongs */
-	GPIO_PinConfig_t GPIO_PinConfig;  /* holds GPIO pin configuration settings */
-
-}GPIO_Handle_t;
-
 
 // Configuration structure for GPIO pins
 typedef struct {
@@ -21,6 +14,12 @@ typedef struct {
 	uint8_t gpio_pin_alt_fun;
 }GPIO_PinConfig_t;
 
+// Handle structure for GPIO pins
+typedef struct {
+	GPIO_RegDef_t    *GPIOx;          /* holds the base address of GPIO port to which pin belongs */
+	GPIO_PinConfig_t GPIO_PinConfig;  /* holds GPIO pin configuration settings */
+
+}GPIO_Handle_t;
 
 // @GPIO_PIN_NUMBERS
 #define GPIO_PIN_NO_0                               0

@@ -160,6 +160,21 @@ typedef struct {
 }SYSCFG_RegDef_t;
 
 
+// peripheral register definition structure for SPI
+typedef struct
+{
+	__vo uint32_t CR1;
+	__vo uint32_t CR2;
+	__vo uint32_t SR;
+	__vo uint32_t DR;
+	__vo uint32_t CRCPR;
+	__vo uint32_t RXCRCR;
+	__vo uint32_t TXCRCR;
+	__vo uint32_t I2DCFGR;
+	__vo uint32_t I2SPR;
+} SPI_RegDef_t;
+
+
 #define GPIOA                                       ((GPIO_RegDef_t*) GPIOA_BASEADDR)
 #define GPIOB                                       ((GPIO_RegDef_t*) GPIOB_BASEADDR)
 #define GPIOC                                       ((GPIO_RegDef_t*) GPIOC_BASEADDR)
@@ -176,6 +191,10 @@ typedef struct {
 #define EXTI                                        ((EXTI_RegDef_t*) EXT1_BASEADDR)
 
 #define SYSCFG                                      ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
+
+#define SPI1                                        ((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2                                        ((SPI_RegDef_t*)SPI2_BASEADDR)
+#define SPI3                                        ((SPI_RegDef_t*)SPI3_BASEADDR)
 
 
 // Peripheral Clock enable macros `GPIOx peripheral clock enable`
@@ -269,6 +288,9 @@ typedef struct {
 								                     (x == GPIOG) ? 6 :\
 								                     (x == GPIOH) ? 7 : 0)
 
+// Clock reset for SPIx peripherals
+#define SPI1_REG_RESET()                             do { (RCC->APB2RSTR |= (1 << 12)); (RCC->APB2RSTR &= ~(1 << 12)); }while(0)
+
 /*
  * IRQ (Interrupt Request) Number of STM32F407x MCU
  * NOTE: update these macros with valid values according
@@ -296,6 +318,7 @@ typedef struct {
 #define GPIO_PIN_RESET                              RESET
 
 #include "stm32f407xx_gpio_driver.h"
+#include "stm32f407xx_spi_driver.h"
 
 #endif /* INC_STM32F407XX_H_ */
 

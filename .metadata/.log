@@ -1824,3 +1824,16 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/nahl/
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-04-23 06:36:07.366
 !MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2023-04-24 22:16:08.403 -----------------------------------------------
+eclipse.buildId=Version 1.12.0
+java.version=11.0.17
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_GB
+Framework arguments:  -keyring /Users/nahl/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/nahl/.eclipse_keyring
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-04-24 22:16:20.896
+!MESSAGE Log4j2 initialized with config file /Users/nahl/dev/c/embedded/ARM_Cortex_M3M4_Device_Driver_Development/.metadata/.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-04-24 22:16:41.749
+!MESSAGE Started RMI Server, listening on port 41337
