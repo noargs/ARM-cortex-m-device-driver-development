@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Delete 4 resources" deleteContents="false" description="Delete 4 resources" element1="/005_HSI_Measurement" element2="/006_HSE_Measurement" element3="/007_Button_Interrupt" element4="/stm32f4xx_drivers" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="4" stamp="1681143971677"/>&#x0A;<refactoring comment="Delete resource &apos;Diagram_Cube_project&apos;" deleteContents="true" description="Delete resource &apos;Diagram_Cube_project&apos;" element1="/Diagram_Cube_project" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1681167950994"/>
-</session>
