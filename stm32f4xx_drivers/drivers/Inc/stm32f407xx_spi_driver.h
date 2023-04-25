@@ -6,7 +6,7 @@
 // Configuration structure for SPIx peripherals
 typedef struct
 {
-	uint8_t spi_device_mode;
+	uint8_t spi_device_mode;       /* possible values from @SPI_Device_Mode */
 	uint8_t spi_bus_config;
 	uint8_t spi_sclk_speed;
 	uint8_t spi_dff;
@@ -22,6 +22,57 @@ typedef struct
 	SPI_Config_t SPIConfig;
 }SPI_Handle_t;
 
+/*
+ * @SPI_Device_Mode
+ */
+#define SPI_DEVICE_MODE_SLAVE                0
+#define SPI_DEVICE_MODE_MASTER               1
+
+
+/*
+ * @SPI_Bus_Config
+ */
+#define SPI_BUS_CONFIG_FD                     1     // Full-Duplex
+#define SPI_BUS_CONFIG_HD                     2     // Half-Duplex
+// #define SPI_BUS_CONFIG_SIMPLEX_TXONLY         3     // Simplex TX
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY         3     // Simplex RX
+
+
+/*
+ * @SPI_Sclk_Speed - Reference Manual SPI_CR1 Page:917
+ */
+#define SPI_SCLK_SPEED_DIV2                   0
+#define SPI_SCLK_SPEED_DIV4                   1
+#define SPI_SCLK_SPEED_DIV8                   2
+#define SPI_SCLK_SPEED_DIV16                  3
+#define SPI_SCLK_SPEED_DIV32                  4
+#define SPI_SCLK_SPEED_DIV64                  5
+#define SPI_SCLK_SPEED_DIV128                 6
+#define SPI_SCLK_SPEED_DIV256                 7
+
+/*
+ * @SPI_DFF
+ */
+#define SPI_DFF_8BITS                         0 // default DataFrame
+#define SPI_DFF_16BITS                        1
+
+/*
+ * @SPI_CPOL - Clock Polarity
+ */
+#define SPI_CPOL_LOW                          0
+#define SPI_CPOL_HIGH                         1
+
+/*
+ * @SPI_CPOH - Clock Phase
+ */
+#define SPI_CPHA_LOW                          0
+#define SPI_CPHA_HIGH                         1
+
+/*
+ * @SPI_SSM
+ */
+#define SPI_SSM_DI                            0 // Software Slave Managment
+#define SPI_SSM_EN                            1 // default Hardware slave managment
 
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
