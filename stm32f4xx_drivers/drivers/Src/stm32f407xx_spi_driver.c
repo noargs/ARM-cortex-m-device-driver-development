@@ -70,6 +70,13 @@ void SPI_DeInit(SPI_RegDef_t *spix) {
 	}
 }
 
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *spix, uint32_t flag_name) {
+	if (spix->SR & flag_name){
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
 // Data send and receive - blocking API
 void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len) {
 	while(len > 0) {

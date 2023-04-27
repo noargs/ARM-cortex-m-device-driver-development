@@ -1,4 +1,4 @@
-"./Src/led_ex_button_interrupt_falling_edge.o"
+"./Src/spi_tx_testing.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"
 "./Startup/startup_stm32f407vgtx.o"

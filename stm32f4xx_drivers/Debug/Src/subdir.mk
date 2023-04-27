@@ -5,17 +5,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Src/led_ex_button_interrupt_falling_edge.c \
+../Src/spi_tx_testing.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c 
 
 OBJS += \
-./Src/led_ex_button_interrupt_falling_edge.o \
+./Src/spi_tx_testing.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
 C_DEPS += \
-./Src/led_ex_button_interrupt_falling_edge.d \
+./Src/spi_tx_testing.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d 
 
@@ -27,7 +27,7 @@ Src/%.o Src/%.su Src/%.cyclo: ../Src/%.c Src/subdir.mk
 clean: clean-Src
 
 clean-Src:
-	-$(RM) ./Src/led_ex_button_interrupt_falling_edge.cyclo ./Src/led_ex_button_interrupt_falling_edge.d ./Src/led_ex_button_interrupt_falling_edge.o ./Src/led_ex_button_interrupt_falling_edge.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+	-$(RM) ./Src/spi_tx_testing.cyclo ./Src/spi_tx_testing.d ./Src/spi_tx_testing.o ./Src/spi_tx_testing.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
 
 .PHONY: clean-Src
 
