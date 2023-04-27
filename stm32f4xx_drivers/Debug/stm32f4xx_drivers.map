@@ -51,6 +51,7 @@ Discarded input sections
  .group         0x0000000000000000        0xc ./Src/led_ex_button_interrupt_falling_edge.o
  .group         0x0000000000000000        0xc ./Src/led_ex_button_interrupt_falling_edge.o
  .group         0x0000000000000000        0xc ./Src/led_ex_button_interrupt_falling_edge.o
+ .group         0x0000000000000000        0xc ./Src/led_ex_button_interrupt_falling_edge.o
  .text          0x0000000000000000        0x0 ./Src/led_ex_button_interrupt_falling_edge.o
  .data          0x0000000000000000        0x0 ./Src/led_ex_button_interrupt_falling_edge.o
  .bss           0x0000000000000000        0x0 ./Src/led_ex_button_interrupt_falling_edge.o
@@ -179,7 +180,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 ./Src/syscalls.o
  .debug_macro   0x0000000000000000       0xce ./Src/syscalls.o
  .debug_line    0x0000000000000000      0x830 ./Src/syscalls.o
- .debug_str     0x0000000000000000     0x8abe ./Src/syscalls.o
+ .debug_str     0x0000000000000000     0x8abb ./Src/syscalls.o
  .comment       0x0000000000000000       0x51 ./Src/syscalls.o
  .debug_frame   0x0000000000000000      0x2ac ./Src/syscalls.o
  .ARM.attributes
@@ -241,7 +242,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x6a ./Src/sysmem.o
  .debug_macro   0x0000000000000000      0x1df ./Src/sysmem.o
  .debug_line    0x0000000000000000      0x526 ./Src/sysmem.o
- .debug_str     0x0000000000000000     0x5dfa ./Src/sysmem.o
+ .debug_str     0x0000000000000000     0x5df7 ./Src/sysmem.o
  .comment       0x0000000000000000       0x51 ./Src/sysmem.o
  .debug_frame   0x0000000000000000       0x34 ./Src/sysmem.o
  .ARM.attributes
@@ -249,6 +250,7 @@ Discarded input sections
  .text          0x0000000000000000       0x14 ./Startup/startup_stm32f407vgtx.o
  .data          0x0000000000000000        0x0 ./Startup/startup_stm32f407vgtx.o
  .bss           0x0000000000000000        0x0 ./Startup/startup_stm32f407vgtx.o
+ .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_gpio_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_gpio_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_gpio_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_gpio_driver.o
@@ -276,8 +278,9 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x103 ./drivers/Src/stm32f407xx_gpio_driver.o
  .debug_macro   0x0000000000000000       0x6a ./drivers/Src/stm32f407xx_gpio_driver.o
  .debug_macro   0x0000000000000000      0x1df ./drivers/Src/stm32f407xx_gpio_driver.o
- .debug_macro   0x0000000000000000      0x365 ./drivers/Src/stm32f407xx_gpio_driver.o
+ .debug_macro   0x0000000000000000      0x437 ./drivers/Src/stm32f407xx_gpio_driver.o
  .debug_macro   0x0000000000000000       0xc4 ./drivers/Src/stm32f407xx_gpio_driver.o
+ .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_spi_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_spi_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_spi_driver.o
  .group         0x0000000000000000        0xc ./drivers/Src/stm32f407xx_spi_driver.o
@@ -293,7 +296,7 @@ Discarded input sections
  .text.SPI_PCLK_Ctrl
                 0x0000000000000000       0xb0 ./drivers/Src/stm32f407xx_spi_driver.o
  .text.SPI_Init
-                0x0000000000000000       0x14 ./drivers/Src/stm32f407xx_spi_driver.o
+                0x0000000000000000       0xa0 ./drivers/Src/stm32f407xx_spi_driver.o
  .text.SPI_DeInit
                 0x0000000000000000       0x88 ./drivers/Src/stm32f407xx_spi_driver.o
  .text.SPI_Send
@@ -306,12 +309,12 @@ Discarded input sections
                 0x0000000000000000       0x18 ./drivers/Src/stm32f407xx_spi_driver.o
  .text.SPI_IRQHandling
                 0x0000000000000000       0x14 ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_info    0x0000000000000000      0x555 ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_abbrev  0x0000000000000000       0xe7 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_info    0x0000000000000000      0x564 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_abbrev  0x0000000000000000       0xf8 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_aranges
                 0x0000000000000000       0x58 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_ranges  0x0000000000000000       0x48 ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_macro   0x0000000000000000       0x95 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_macro   0x0000000000000000       0x9a ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000      0xa84 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000       0x22 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000       0x8e ./drivers/Src/stm32f407xx_spi_driver.o
@@ -319,10 +322,11 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x103 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000       0x6a ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000      0x1df ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_macro   0x0000000000000000      0x365 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_macro   0x0000000000000000      0x437 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_macro   0x0000000000000000       0xc4 ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_line    0x0000000000000000      0x557 ./drivers/Src/stm32f407xx_spi_driver.o
- .debug_str     0x0000000000000000     0x57e3 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_macro   0x0000000000000000       0x94 ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_line    0x0000000000000000      0x5ab ./drivers/Src/stm32f407xx_spi_driver.o
+ .debug_str     0x0000000000000000     0x5bc8 ./drivers/Src/stm32f407xx_spi_driver.o
  .comment       0x0000000000000000       0x51 ./drivers/Src/stm32f407xx_spi_driver.o
  .debug_frame   0x0000000000000000      0x150 ./drivers/Src/stm32f407xx_spi_driver.o
  .ARM.attributes
@@ -725,50 +729,52 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
  .debug_ranges  0x0000000000000020       0x20 ./Startup/startup_stm32f407vgtx.o
  .debug_ranges  0x0000000000000040       0x60 ./drivers/Src/stm32f407xx_gpio_driver.o
 
-.debug_macro    0x0000000000000000     0x1e8a
- .debug_macro   0x0000000000000000      0x170 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000170      0xa84 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000bf4       0x22 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000c16       0x4c ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000c62       0x1e ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000c80       0x94 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000d14       0x3c ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000d50       0x34 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000d84      0x174 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000ef8       0x16 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000f0e       0x43 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000f51       0x57 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000fa8       0x34 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000fdc       0x10 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000000fec       0x58 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000001044       0x71 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000010b5       0x1c ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000010d1      0x12a ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000011fb      0x341 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x000000000000153c       0x10 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x000000000000154c       0x35 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000001581       0x20 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000015a1      0x103 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000016a4       0x6a ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x000000000000170e      0x1df ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x00000000000018ed      0x365 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000001c52       0xc4 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_macro   0x0000000000001d16       0x95 ./drivers/Src/stm32f407xx_gpio_driver.o
- .debug_macro   0x0000000000001dab       0x8e ./drivers/Src/stm32f407xx_gpio_driver.o
- .debug_macro   0x0000000000001e39       0x51 ./drivers/Src/stm32f407xx_gpio_driver.o
+.debug_macro    0x0000000000000000     0x208e
+ .debug_macro   0x0000000000000000      0x16f ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x000000000000016f      0xa84 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000bf3       0x22 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000c15       0x4c ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000c61       0x1e ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000c7f       0x94 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000d13       0x3c ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000d4f       0x34 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000d83      0x174 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000ef7       0x16 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000f0d       0x43 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000f50       0x57 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000fa7       0x34 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000fdb       0x10 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000000feb       0x58 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000001043       0x71 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000010b4       0x1c ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000010d0      0x12a ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000011fa      0x341 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x000000000000153b       0x10 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x000000000000154b       0x35 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000001580       0x20 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000015a0      0x103 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000016a3       0x6a ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x000000000000170d      0x1df ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x00000000000018ec      0x437 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000001d23       0xc4 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000001de7       0x9a ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_macro   0x0000000000001e81       0x9a ./drivers/Src/stm32f407xx_gpio_driver.o
+ .debug_macro   0x0000000000001f1b       0x8e ./drivers/Src/stm32f407xx_gpio_driver.o
+ .debug_macro   0x0000000000001fa9       0x51 ./drivers/Src/stm32f407xx_gpio_driver.o
+ .debug_macro   0x0000000000001ffa       0x94 ./drivers/Src/stm32f407xx_gpio_driver.o
 
-.debug_line     0x0000000000000000     0x10bb
- .debug_line    0x0000000000000000      0x663 ./Src/led_ex_button_interrupt_falling_edge.o
- .debug_line    0x0000000000000663       0x84 ./Startup/startup_stm32f407vgtx.o
- .debug_line    0x00000000000006e7      0x9d4 ./drivers/Src/stm32f407xx_gpio_driver.o
+.debug_line     0x0000000000000000     0x10b5
+ .debug_line    0x0000000000000000      0x660 ./Src/led_ex_button_interrupt_falling_edge.o
+ .debug_line    0x0000000000000660       0x84 ./Startup/startup_stm32f407vgtx.o
+ .debug_line    0x00000000000006e4      0x9d1 ./drivers/Src/stm32f407xx_gpio_driver.o
 
-.debug_str      0x0000000000000000     0x88ed
- .debug_str     0x0000000000000000     0x8655 ./Src/led_ex_button_interrupt_falling_edge.o
-                                       0x8855 (size before relaxing)
- .debug_str     0x0000000000008655       0x31 ./Startup/startup_stm32f407vgtx.o
-                                         0x8e (size before relaxing)
- .debug_str     0x0000000000008686      0x267 ./drivers/Src/stm32f407xx_gpio_driver.o
-                                       0x58de (size before relaxing)
+.debug_str      0x0000000000000000     0x8cbd
+ .debug_str     0x0000000000000000     0x8a25 ./Src/led_ex_button_interrupt_falling_edge.o
+                                       0x8c2c (size before relaxing)
+ .debug_str     0x0000000000008a25       0x31 ./Startup/startup_stm32f407vgtx.o
+                                         0x8b (size before relaxing)
+ .debug_str     0x0000000000008a56      0x267 ./drivers/Src/stm32f407xx_gpio_driver.o
+                                       0x5cb5 (size before relaxing)
 
 .comment        0x0000000000000000       0x50
  .comment       0x0000000000000000       0x50 ./Src/led_ex_button_interrupt_falling_edge.o

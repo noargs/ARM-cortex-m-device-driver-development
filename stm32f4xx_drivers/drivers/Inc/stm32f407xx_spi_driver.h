@@ -74,6 +74,11 @@ typedef struct
 #define SPI_SSM_DI                            0 // Software Slave Managment
 #define SPI_SSM_EN                            1 // default Hardware slave managment
 
+// SPI related status flags definitions
+#define SPI_TXE_FLAG                           (1 << SPI_SR_TXE)
+#define SPI_RXNE_FLAG                          (1 << SPI_SR_RXNE)
+#define SPI_BUSY_FLAG                          (1 << SPI_SR_BSY)
+
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
 
@@ -86,7 +91,7 @@ void SPI_Init (SPI_Handle_t *spi_handle);
 void SPI_DeInit (SPI_RegDef_t *spix);
 
 // Data send and receive
-void SPI_Send(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len);
+void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len);
 void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len);
 
 // IRQ configuration and ISR handling

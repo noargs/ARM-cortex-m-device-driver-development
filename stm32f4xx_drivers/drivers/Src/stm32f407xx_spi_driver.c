@@ -70,8 +70,29 @@ void SPI_DeInit(SPI_RegDef_t *spix) {
 	}
 }
 
-// Data send and receive
-void SPI_Send(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len) {}
+// Data send and receive - blocking API
+void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len) {
+	while(len > 0) {
+		// 1. wait until TXE is empty ( Tx buffer empty : 1 Reference Manual Page:919 )
+	    // while(!(spix->SR & (1 << 1)));
+		while( SPI_GetFlagStatus(spix, SPI_TXE_FLAG) == FLAG_RESET );
+
+		//2. check the DFF bit in CR1
+		if (spix->CR1 & (1 << SPI_CR1_DFF)) {
+			// 16 bit DFF
+			// 1. load the data into the DR
+			spix->DR = *((uint16_t*)tx_buffer);
+			len--;
+			len--;
+			(uint16_t*)tx_buffer++;
+		} else {
+			// 8 bit DFF
+			spix->DR = *tx_buffer;
+			len--;
+			tx_buffer++;
+		}
+	}
+}
 
 void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len) {}
 
