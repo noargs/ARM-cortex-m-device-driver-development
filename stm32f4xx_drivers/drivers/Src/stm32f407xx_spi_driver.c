@@ -23,7 +23,11 @@ void SPI_PCLK_Ctrl(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
 
 // Initialise and De-intialise GPIOs
 void SPI_Init(SPI_Handle_t *spi_handle) {
-	// configure the SPI_CR1 register
+
+	// peripheral clock enable
+	SPI_PCLK_Ctrl(spi_handle->SPIx, ENABLE);
+
+	// first configure the SPI_CR1 register
 	uint32_t temp_register = 0;
 
 	//1. configure the device mode
@@ -57,7 +61,31 @@ void SPI_Init(SPI_Handle_t *spi_handle) {
 	temp_register |= spi_handle->SPIConfig.spi_cpha << SPI_CR1_CPHA;
 
 	spi_handle->SPIx->CR1 = temp_register;
+}
 
+
+void SPI_PeripheralControl(SPI_RegDef_t *spix, uint8_t enable_or_disable){
+	if (enable_or_disable == ENABLE) {
+		spix->CR1 |= (1 << SPI_CR1_SPE);
+	} else {
+		spix->CR1 &= ~(1 << SPI_CR1_SPE);
+	}
+}
+
+void SPI_SSIConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
+	if (enable_or_disable == ENABLE) {
+		spix->CR1 |= (1 << SPI_CR1_SSI);
+	} else {
+		spix->CR1 &= ~(1 << SPI_CR1_SSI);
+	}
+}
+
+void SPI_SSOEConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
+	if (enable_or_disable == ENABLE) {
+		spix->CR1 |= (1 << SPI_CR2_SSOE);
+	} else {
+		spix->CR1 &= ~(1 << SPI_CR2_SSOE);
+	}
 }
 
 void SPI_DeInit(SPI_RegDef_t *spix) {

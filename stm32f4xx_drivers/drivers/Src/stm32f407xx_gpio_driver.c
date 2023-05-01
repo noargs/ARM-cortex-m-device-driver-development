@@ -73,6 +73,9 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 
 	uint32_t temp = 0;
 
+	// enable the peripheral clock
+	GPIO_PCLK_Ctrl(gpio_handle->GPIOx, ENABLE);
+
 	// 1. configure the mode of gpio pin
 	if (gpio_handle->GPIO_PinConfig.gpio_pin_mode <= GPIO_MODE_ANALOG) {
 		// -[none interrupt mode]-

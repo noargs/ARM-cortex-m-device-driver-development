@@ -7,12 +7,12 @@
 typedef struct
 {
 	uint8_t spi_device_mode;       /* possible values from @SPI_Device_Mode */
-	uint8_t spi_bus_config;
-	uint8_t spi_sclk_speed;
-	uint8_t spi_dff;
-	uint8_t spi_cpol;
-	uint8_t spi_cpha;
-	uint8_t spi_ssm;
+	uint8_t spi_bus_config;        /* possible values from @SPI_Bus_Config */
+	uint8_t spi_sclk_speed;        /* possible values from @SPI_Sclk_Speed */
+	uint8_t spi_dff;               /* possible values from @SPI_DFF */
+	uint8_t spi_cpol;              /* possible values from @SPI_CPOL */
+	uint8_t spi_cpha;              /* possible values from @SPI_CPOH */
+	uint8_t spi_ssm;               /* possible values from @SPI_SSM */
 }SPI_Config_t;
 
 // Handle structure for SPIx peripheral
@@ -100,6 +100,10 @@ void SPI_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority);
 void SPI_IRQHandling(SPI_Handle_t *spix_handle);
 
 // other peripheral control APIs
+void SPI_PeripheralControl(SPI_RegDef_t *spix, uint8_t enable_or_disable);
+void SPI_SSIConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable);
+void SPI_SSOEConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable);
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *spix, uint32_t flag_name);
 
 
 
