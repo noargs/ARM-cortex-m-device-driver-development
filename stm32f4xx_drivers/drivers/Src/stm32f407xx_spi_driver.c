@@ -129,7 +129,29 @@ void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len) {
 	}
 }
 
-void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len) {}
+void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len) {
+	while(len > 0) {
+
+		// 1. wait until RXNE is empty ( Tx buffer empty : 1 Reference Manual Page:919 )
+	    // while(!(spix->SR & (1 << 1)));
+		while( SPI_GetFlagStatus(spix, SPI_RXNE_FLAG) == FLAG_RESET );
+
+		//2. check the DFF bit in CR1
+		if (spix->CR1 & (1 << SPI_CR1_DFF)) {
+			// 16 bit DFF
+			// 1. load the data from the DR to Rxbuffer address
+			*((uint16_t*)rx_buffer) = spix->DR;
+			len--;
+			len--;
+			(uint16_t*)rx_buffer++;
+		} else {
+			// 8 bit DFF
+			*rx_buffer = spix->DR;
+			len--;
+			rx_buffer++;
+		}
+	}
+}
 
 // IRQ configuration and ISR handling
 void SPI_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable) { }
