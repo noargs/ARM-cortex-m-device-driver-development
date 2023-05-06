@@ -129,7 +129,7 @@ void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len) {
 	}
 }
 
-void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len) {
+void SPI_ReceiveData(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len) {
 	while(len > 0) {
 
 		// 1. wait until RXNE is empty ( Tx buffer empty : 1 Reference Manual Page:919 )

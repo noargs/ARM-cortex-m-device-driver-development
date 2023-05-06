@@ -92,7 +92,7 @@ void SPI_DeInit (SPI_RegDef_t *spix);
 
 // Data send and receive
 void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len);
-void SPI_Receive(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len);
+void SPI_ReceiveData(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len);
 
 // IRQ configuration and ISR handling
 void SPI_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
