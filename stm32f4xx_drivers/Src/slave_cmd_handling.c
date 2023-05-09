@@ -38,7 +38,7 @@ void SPI2_GPIOInits(void) {
 	spi_pins.GPIO_PinConfig.gpio_pin_mode = GPIO_MODE_ALTFN;
 	spi_pins.GPIO_PinConfig.gpio_pin_alt_fun = 5;
 	spi_pins.GPIO_PinConfig.gpio_pin_op_type = GPIO_OP_TYPE_PP;
-	spi_pins.GPIO_PinConfig.gpio_pin_pu_pd_control = GPIO_NO_PUPD;
+	spi_pins.GPIO_PinConfig.gpio_pin_pu_pd_control = GPIO_PU;
 	spi_pins.GPIO_PinConfig.gpio_pin_speed = GPIO_SPEED_FAST;
 
 	// SCLK
@@ -64,7 +64,7 @@ void SPI2_Inits(void) {
 	spi2_handle.SPIx = SPI2;
 	spi2_handle.SPIConfig.spi_bus_config = SPI_BUS_CONFIG_FD;
 	spi2_handle.SPIConfig.spi_device_mode = SPI_DEVICE_MODE_MASTER;
-	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV8; // generate sclk of 2MHz
+	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV32; // generate sclk of 2MHz
 	spi2_handle.SPIConfig.spi_dff = SPI_DFF_8BITS;
 	spi2_handle.SPIConfig.spi_cpol = SPI_CPOL_LOW;
 	spi2_handle.SPIConfig.spi_cpha = SPI_CPHA_LOW;
@@ -84,12 +84,17 @@ void GPIO_ButtonInit(void) {
 	gpio_button.GPIO_PinConfig.gpio_pin_pu_pd_control = GPIO_NO_PUPD;
 
 	GPIO_Init(&gpio_button);
+}
 
+uint8_t SPI_VerifyResponse(uint8_t ack_byte) {
+	if(ack_byte == 0xF5) return 1;
+	return 0;
 }
 
 int main(void) {
 
-	uint8_t dummy_byte = 0xff;
+	uint8_t dummy_write = 0xff;
+	uint8_t dummy_read;
 
 	GPIO_ButtonInit();
 
@@ -120,14 +125,42 @@ int main(void) {
 		// enable the SPI2 peripheral
 		SPI_PeripheralControl(SPI2, ENABLE);
 
+
+		uint8_t commandcode = COMMAND_LED_CTRL;
+		uint8_t ack_byte;
+		uint8_t args[2];
+
+		// 1. CMD_LED_CTRL <pin no(1)>     <value(1)>
+		SPI_SendData(SPI2, &commandcode, 1);
+
+		// do dummy read to clear off the RXNE
+		SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+		// send dummy bits (1 byte) to fetch the response from the slave.
+		// when this API call returns response from the slave would
+		//  have arrived at the master. So let’s read next with
+		//  with SPI_ReceiveData()
+		SPI_SendData(SPI2, &dummy_write, 1);
+
+		// read the ack byte received
+		SPI_ReceiveData(SPI2, &ack_byte, 1);
+
+		if (SPI_VerifyResponse(ack_byte)) {
+			// send arguments
+			args[0] = LED_PIN_9;
+			args[1] = LED_ON;
+			SPI_SendData(SPI2, args, 1);
+		}
+
+
 		// first send length information to slave device
 		// Arduino sketch expects 1 byte of length information followed by data
-		uint8_t data_len = strlen(user_data);
-		SPI_SendData(SPI2, &data_len, 1);
+//		uint8_t data_len = strlen(user_data);
+//		SPI_SendData(SPI2, &data_len, 1);
 
-		SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+//		SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
 
-		// confitm the SPI is not busy
+		// confirm the SPI is not busy
 		while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
 
 		// disable after a data communication

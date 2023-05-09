@@ -82,9 +82,9 @@ void SPI_SSIConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
 
 void SPI_SSOEConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
 	if (enable_or_disable == ENABLE) {
-		spix->CR1 |= (1 << SPI_CR2_SSOE);
+		spix->CR2 |= (1 << SPI_CR2_SSOE);
 	} else {
-		spix->CR1 &= ~(1 << SPI_CR2_SSOE);
+		spix->CR2 &= ~(1 << SPI_CR2_SSOE);
 	}
 }
 

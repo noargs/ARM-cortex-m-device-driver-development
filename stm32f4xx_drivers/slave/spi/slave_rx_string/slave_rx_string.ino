@@ -78,7 +78,7 @@ void loop()
   }
 
 
-  //  Serial.println(String(i,HEX));
+  //Serial.println(String(i,HEX));
   dataBuff[i] = '\0';
   
   Serial.println("Rcvd:");

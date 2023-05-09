@@ -42,7 +42,7 @@ void SPI2_Inits(void) {
 	spi2_handle.SPIConfig.spi_device_mode = SPI_DEVICE_MODE_MASTER;
 	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV2; // generate sclk of 8 MHz
 	spi2_handle.SPIConfig.spi_dff = SPI_DFF_8BITS;
-	spi2_handle.SPIConfig.spi_cpol = SPI_CPOL_LOW;
+	spi2_handle.SPIConfig.spi_cpol = SPI_CPOL_HIGH;
 	spi2_handle.SPIConfig.spi_cpha = SPI_CPHA_LOW;
 	spi2_handle.SPIConfig.spi_ssm = SPI_SSM_EN; // software slave managment enabled for NSS pin
 
@@ -54,7 +54,7 @@ int main(void) {
 
 	char user_data[] = "Hello world";
 
-	char user_data[] = "An Arduino Uno board is best suited for beginners who has just started using microcontrollers, on the other hand, Arduino Mega board is for enthusiast who require lot of I/O pins for their projects";
+//	char user_data[] = "An Arduino Uno board is best suited for beginners who has just started using microcontrollers, on the other hand, Arduino Mega board is for enthusiast who require lot of I/O pins for their projects";
 
 	// initialise the GPIO pins to behave as SPI2 pins
 	SPI2_GPIOInits();

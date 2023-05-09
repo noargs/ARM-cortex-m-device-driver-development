@@ -44,7 +44,7 @@ void SPI2_Inits(void) {
 	spi2_handle.SPIx = SPI2;
 	spi2_handle.SPIConfig.spi_bus_config = SPI_BUS_CONFIG_FD;
 	spi2_handle.SPIConfig.spi_device_mode = SPI_DEVICE_MODE_MASTER;
-	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV8; // generate sclk of 2MHz
+	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV32; // generate sclk
 	spi2_handle.SPIConfig.spi_dff = SPI_DFF_8BITS;
 	spi2_handle.SPIConfig.spi_cpol = SPI_CPOL_LOW;
 	spi2_handle.SPIConfig.spi_cpha = SPI_CPHA_LOW;
@@ -70,6 +70,8 @@ void GPIO_ButtonInit(void) {
 int main(void) {
 
 	char user_data[] = "Hello world";
+
+	// char user_data[] = "An Arduino Uno board is best suited for beginners who have just started using microcontrollers, on the other hand, Arduino Mega board is for enthusiasts who require a lot of I/O pins for their projects";
 
 	GPIO_ButtonInit();
 
