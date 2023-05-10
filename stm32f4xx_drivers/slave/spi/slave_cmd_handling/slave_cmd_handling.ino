@@ -19,26 +19,30 @@ uint8_t dataBuff[255];
 
 uint8_t board_id[10] = "ARDUINOUNO";
 
-#define NACK 0xA5
-#define ACK 0xF5
+#define NACK                      0xA5
+#define ACK                       0xF5
 
 
 //command codes
 #define COMMAND_LED_CTRL          0x50
 #define COMMAND_SENSOR_READ       0x51
 #define COMMAND_LED_READ          0x52
-#define COMMAND_PRINT           0x53
-#define COMMAND_ID_READ         0x54
+#define COMMAND_PRINT             0x53
+#define COMMAND_ID_READ           0x54
 
-#define LED_ON     1
-#define LED_OFF    0
+#define LED_ON                    1
+#define LED_OFF                   0
 
 //arduino analog pins
-#define ANALOG_PIN0   0
-#define ANALOG_PIN1   1
-#define ANALOG_PIN2   2
-#define ANALOG_PIN3   3
-#define ANALOG_PIN4   4
+#define ANALOG_PIN0               0
+#define ANALOG_PIN1               1
+#define ANALOG_PIN2               2
+#define ANALOG_PIN3               3
+#define ANALOG_PIN4               4
+
+// TMP36 sensor
+uint16_t sensor_input; // store the sensor input
+double temp;           // store temperate in degress
 
 //Initialize SPI slave.
 void SPI_SlaveInit(void) 
@@ -135,17 +139,25 @@ void loop()
     //read analog pin number 
     uint16_t aread;
     uint8_t pin = SPI_SlaveReceive(); 
+    
     //pinMode(pin+14, INPUT_PULLUP);
     uint8_t val;
-    aread = analogRead(pin+14);
-    val = map(aread, 0, 1023, 0, 255);
+//    aread = analogRead(pin+14);
+//    val = map(aread, 0, 1023, 0, 255);
+
+    sensor_input = analogRead(pin);
+    temp = (double)sensor_input / 1024; //find percentage of input reading
+    temp = temp * 5; //multiply by 5V to get voltage
+    temp = temp - 0.5; //Subtract the offset
+    temp = temp * 100; //Convert to degrees
     
-    SPI_SlaveTransmit(val);
+    SPI_SlaveTransmit(temp);
   
     val = SPI_SlaveReceive(); //dummy read
     
     Serial.println("RCVD:COMMAND_SENSOR_READ");
-  
+    Serial.print("Current Temperature: ");
+    Serial.println(temp);
     
   
   }else if ( command == COMMAND_LED_READ)

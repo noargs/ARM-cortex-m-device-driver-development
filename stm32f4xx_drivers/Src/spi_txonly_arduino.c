@@ -1,6 +1,7 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
+// Arduino sketch located at [slave/spi/spi_rx_string]
 // PB14 --> SPI2_MISO (not used)
 // PB15 --> SPI2_MOSI
 // PB13 --> SPI2_SCLK

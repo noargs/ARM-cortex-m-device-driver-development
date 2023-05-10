@@ -1,6 +1,14 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
+// // Arduino sketch located at [slave/spi/slave_cmd_handling]
+// PB14 --> SPI2_MISO
+// PB15 --> SPI2_MOSI
+// PB13 --> SPI2_SCLK
+// PB12 --> SPI2_NSS
+// ALT function mode : 5
+
+
 // command codes
 #define COMMAND_LED_CTRL                      0x50
 #define COMMAND_SENSOR_READ                   0x51
@@ -21,11 +29,6 @@
 // arduino led
 #define LED_PIN_9                             9
 
-// PB14 --> SPI2_MISO
-// PB15 --> SPI2_MOSI
-// PB13 --> SPI2_SCLK
-// PB12 --> SPI2_NSS
-// ALT function mode : 5
 
 void delay(void) {
 	for (uint32_t i=0; i<500000/2; i++);
@@ -64,7 +67,7 @@ void SPI2_Inits(void) {
 	spi2_handle.SPIx = SPI2;
 	spi2_handle.SPIConfig.spi_bus_config = SPI_BUS_CONFIG_FD;
 	spi2_handle.SPIConfig.spi_device_mode = SPI_DEVICE_MODE_MASTER;
-	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV32; // generate sclk of 2MHz
+	spi2_handle.SPIConfig.spi_sclk_speed = SPI_SCLK_SPEED_DIV8; // generate sclk of 2MHz
 	spi2_handle.SPIConfig.spi_dff = SPI_DFF_8BITS;
 	spi2_handle.SPIConfig.spi_cpol = SPI_CPOL_LOW;
 	spi2_handle.SPIConfig.spi_cpha = SPI_CPHA_LOW;
@@ -87,7 +90,7 @@ void GPIO_ButtonInit(void) {
 }
 
 uint8_t SPI_VerifyResponse(uint8_t ack_byte) {
-	if(ack_byte == 0xF5) return 1;
+	if(ack_byte == 0xF5) return 1; // ACK
 	return 0;
 }
 
@@ -119,7 +122,6 @@ int main(void) {
 	while(1) {
 
 		while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
-
 		delay();
 
 		// enable the SPI2 peripheral
@@ -131,15 +133,14 @@ int main(void) {
 		uint8_t args[2];
 
 		// 1. CMD_LED_CTRL <pin no(1)>     <value(1)>
+
+		// send command
 		SPI_SendData(SPI2, &commandcode, 1);
 
-		// do dummy read to clear off the RXNE
+		// do dummy read to clear off the RXNE of master
 		SPI_ReceiveData(SPI2, &dummy_read, 1);
 
-		// send dummy bits (1 byte) to fetch the response from the slave.
-		// when this API call returns response from the slave would
-		//  have arrived at the master. So let’s read next with
-		//  with SPI_ReceiveData()
+		// move data (ACK/NACK) out of slave shift register by sending dummy write
 		SPI_SendData(SPI2, &dummy_write, 1);
 
 		// read the ack byte received
@@ -149,16 +150,48 @@ int main(void) {
 			// send arguments
 			args[0] = LED_PIN_9;
 			args[1] = LED_ON;
-			SPI_SendData(SPI2, args, 1);
+			SPI_SendData(SPI2, args, 2);
 		}
 
 
-		// first send length information to slave device
-		// Arduino sketch expects 1 byte of length information followed by data
-//		uint8_t data_len = strlen(user_data);
-//		SPI_SendData(SPI2, &data_len, 1);
+		// 2. CMD_SENSOR_READ    <analogue pin number(1)>
+		while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
+		delay();
 
-//		SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+		commandcode = COMMAND_SENSOR_READ;
+
+		// send command
+		SPI_SendData(SPI2, &commandcode, 1);
+
+		// dummy read to clear off the RXNE of master
+		SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+		// move data (ACK/NACK) out of slave shift register by sending dummy write
+		SPI_SendData(SPI2, &dummy_write, 1);
+
+		// read the ACK byte received from slave
+		SPI_ReceiveData(SPI2, &ack_byte, 1);
+
+		if (SPI_VerifyResponse(ack_byte)) {
+			// send arguments
+			args[0] = ANALOG_PIN0;
+			SPI_SendData(SPI2, args, 1);
+
+			// dummy read to clear off the RXNE of master
+			SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+			// Slave will take some to read the Analog (ADC conversion on that pin)
+			// therefore master should wait
+			delay();
+
+			// send dummy data to fetch the response (analog sensor read) from the slave
+			SPI_SendData(SPI2, &dummy_write, 1);
+
+			uint8_t analog_read;
+			SPI_ReceiveData(SPI2, &analog_read, 1);
+		}
+
+
 
 		// confirm the SPI is not busy
 		while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
