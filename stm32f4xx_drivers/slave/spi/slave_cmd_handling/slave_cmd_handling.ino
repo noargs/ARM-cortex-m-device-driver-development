@@ -40,9 +40,6 @@ uint8_t board_id[10] = "ARDUINOUNO";
 #define ANALOG_PIN3               3
 #define ANALOG_PIN4               4
 
-// TMP36 sensor
-uint16_t sensor_input; // store the sensor input
-double temp;           // store temperate in degress
 
 //Initialize SPI slave.
 void SPI_SlaveInit(void) 
@@ -142,22 +139,26 @@ void loop()
     
     //pinMode(pin+14, INPUT_PULLUP);
     uint8_t val;
-//    aread = analogRead(pin+14);
-//    val = map(aread, 0, 1023, 0, 255);
+    aread = analogRead(pin+14);
+//    val = map(aread, 0, 1023, 0, 255); // use when A0 connected to 5V, 3V or GND       
+    float voltage = aread * (5.0 / 1024.0);
+    float temp_celsius = (voltage - 0.5) * 100;
+    SPI_SlaveTransmit(temp_celsius);
+    Serial.print("Current Temperature: ");
+    Serial.print(temp_celsius);
+    Serial.print("\xC2\xB0"); // degree symbol
+    Serial.print("C | ");
 
-    sensor_input = analogRead(pin);
-    temp = (double)sensor_input / 1024; //find percentage of input reading
-    temp = temp * 5; //multiply by 5V to get voltage
-    temp = temp - 0.5; //Subtract the offset
-    temp = temp * 100; //Convert to degrees
+    float temp_fahrenheit = (temp_celsius * 9.0 / 5.0) + 32.0;
+    Serial.print(temp_fahrenheit);
+    Serial.print("\xC2\xB0");
+    Serial.println("F");
     
-    SPI_SlaveTransmit(temp);
   
     val = SPI_SlaveReceive(); //dummy read
     
     Serial.println("RCVD:COMMAND_SENSOR_READ");
-    Serial.print("Current Temperature: ");
-    Serial.println(temp);
+
     
   
   }else if ( command == COMMAND_LED_READ)

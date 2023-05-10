@@ -96,110 +96,217 @@ uint8_t SPI_VerifyResponse(uint8_t ack_byte) {
 
 int main(void) {
 
-	uint8_t dummy_write = 0xff;
-	uint8_t dummy_read;
+uint8_t dummy_write = 0xff;
+uint8_t dummy_read;
 
-	GPIO_ButtonInit();
+GPIO_ButtonInit();
 
-	// initialise the GPIO pins to behave as SPI2 pins
-	SPI2_GPIOInits();
+// initialise the GPIO pins to behave as SPI2 pins
+SPI2_GPIOInits();
 
-	// initialise/configure SPI2 peripheral
-	SPI2_Inits();
+// initialise/configure SPI2 peripheral
+SPI2_Inits();
 
-	// this makes the NSS signal high internally, avoids the Master Mode fault
-	// when SSM is disabled, SSI has no use!!
-	// SPI_SSIConfig(SPI2, ENABLE);
+// this makes the NSS signal high internally, avoids the Master Mode fault
+// when SSM is disabled, SSI has no use!!
+// SPI_SSIConfig(SPI2, ENABLE);
 
-	/*
-	 * making SSOE 1 does NSS output enable.
-	 * The NSS pin is automatically managed by the hardware.
-	 * i.e. when SPE=1, NSS will be pulled to low
-	 * and NSS pin will be high when SPE=0
-	 */
-	SPI_SSOEConfig(SPI2, ENABLE);
+/*
+ * making SSOE 1 does NSS output enable.
+ * The NSS pin is automatically managed by the hardware.
+ * i.e. when SPE=1, NSS will be pulled to low
+ * and NSS pin will be high when SPE=0
+ */
+SPI_SSOEConfig(SPI2, ENABLE);
 
-	while(1) {
+while(1) {
 
-		while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
-		delay();
+	while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
+	delay();
 
-		// enable the SPI2 peripheral
-		SPI_PeripheralControl(SPI2, ENABLE);
-
-
-		uint8_t commandcode = COMMAND_LED_CTRL;
-		uint8_t ack_byte;
-		uint8_t args[2];
-
-		// 1. CMD_LED_CTRL <pin no(1)>     <value(1)>
-
-		// send command
-		SPI_SendData(SPI2, &commandcode, 1);
-
-		// do dummy read to clear off the RXNE of master
-		SPI_ReceiveData(SPI2, &dummy_read, 1);
-
-		// move data (ACK/NACK) out of slave shift register by sending dummy write
-		SPI_SendData(SPI2, &dummy_write, 1);
-
-		// read the ack byte received
-		SPI_ReceiveData(SPI2, &ack_byte, 1);
-
-		if (SPI_VerifyResponse(ack_byte)) {
-			// send arguments
-			args[0] = LED_PIN_9;
-			args[1] = LED_ON;
-			SPI_SendData(SPI2, args, 2);
-		}
+	// enable the SPI2 peripheral
+	SPI_PeripheralControl(SPI2, ENABLE);
 
 
-		// 2. CMD_SENSOR_READ    <analogue pin number(1)>
-		while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
-		delay();
+	// 1. COMMAND_LED_CTRL     <pin no(1)>     <value(1)>
+	uint8_t commandcode = COMMAND_LED_CTRL;
+	uint8_t ack_byte;
+	uint8_t args[2];
 
-		commandcode = COMMAND_SENSOR_READ;
+	// send command
+	SPI_SendData(SPI2, &commandcode, 1);
 
-		// send command
-		SPI_SendData(SPI2, &commandcode, 1);
+	// do dummy read to clear off the RXNE of master
+	SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+	// move data (ACK/NACK) out of slave shift register by sending dummy write
+	SPI_SendData(SPI2, &dummy_write, 1);
+
+	// read the ack byte received
+	SPI_ReceiveData(SPI2, &ack_byte, 1);
+
+	if (SPI_VerifyResponse(ack_byte)) {
+		// send arguments
+		args[0] = LED_PIN_9;
+		args[1] = LED_ON;
+		SPI_SendData(SPI2, args, 2);
+	}
+
+
+	// 2. COMMAND_SENSOR_READ      <analogue pin number(1)>
+	while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
+	delay();
+
+	commandcode = COMMAND_SENSOR_READ;
+
+	// send command
+	SPI_SendData(SPI2, &commandcode, 1);
+
+	// dummy read to clear off the RXNE of master
+	SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+	// move data (ACK/NACK) out of slave shift register by sending dummy write
+	SPI_SendData(SPI2, &dummy_write, 1);
+
+	// read the ACK byte received from slave
+	SPI_ReceiveData(SPI2, &ack_byte, 1);
+
+	if (SPI_VerifyResponse(ack_byte)) {
+		// send arguments
+		args[0] = ANALOG_PIN0;
+		SPI_SendData(SPI2, args, 1);
 
 		// dummy read to clear off the RXNE of master
 		SPI_ReceiveData(SPI2, &dummy_read, 1);
 
-		// move data (ACK/NACK) out of slave shift register by sending dummy write
+		// Slave will take sometime to read the Analog (ADC conversion on that pin)
+		// therefore master should wait
+		delay();
+
+		// send dummy data to fetch the response (analog sensor read) from the slave
 		SPI_SendData(SPI2, &dummy_write, 1);
 
-		// read the ACK byte received from slave
-		SPI_ReceiveData(SPI2, &ack_byte, 1);
+		uint8_t analog_read;
+		SPI_ReceiveData(SPI2, &analog_read, 1);
+	}
 
-		if (SPI_VerifyResponse(ack_byte)) {
-			// send arguments
-			args[0] = ANALOG_PIN0;
-			SPI_SendData(SPI2, args, 1);
 
-			// dummy read to clear off the RXNE of master
-			SPI_ReceiveData(SPI2, &dummy_read, 1);
+	// 3. COMMAND_LED_READ               <pin no(1)>
+	while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
+	delay();
 
-			// Slave will take some to read the Analog (ADC conversion on that pin)
-			// therefore master should wait
-			delay();
+	commandcode = COMMAND_LED_READ;
 
-			// send dummy data to fetch the response (analog sensor read) from the slave
-			SPI_SendData(SPI2, &dummy_write, 1);
+	// send command
+	SPI_SendData(SPI2, &commandcode, 1);
 
-			uint8_t analog_read;
-			SPI_ReceiveData(SPI2, &analog_read, 1);
+	// dummy read to clear off RXNE of master
+	SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+	// send dummy byte to fetch the response from slave (to move data from slave shift register)
+	SPI_SendData(SPI2, &dummy_write, 1);
+
+	// read the ACK byte received from slave
+	SPI_ReceiveData(SPI2, &ack_byte, 1);
+
+	if (SPI_VerifyResponse(ack_byte)) {
+		args[0] = LED_PIN_9;
+
+		// send arguments
+		SPI_SendData(SPI2, args, 1);
+
+		// dummy read to clear off RXNE of master
+		SPI_ReceiveData(SPI2, &dummy_read, 1);
+
+		delay();
+
+		// send dummy bits to move the data out of shift register of slave
+		SPI_SendData(SPI2, &dummy_write, 1);
+
+		uint8_t led_status;
+		SPI_ReceiveData(SPI2, &led_status, 1);
+	}
+
+
+	// 4. COMMAND_PRINT 		<len(2)>  <message(len) >
+	while( ! GPIO_ReadFromInputPin(GPIOA,GPIO_PIN_NO_0) );
+	delay(); // 200 ms
+
+	commandcode = COMMAND_PRINT;
+
+	//send command
+	SPI_SendData(SPI2,&commandcode,1);
+
+	//do dummy read to clear off the RXNE
+	SPI_ReceiveData(SPI2,&dummy_read,1);
+
+	//Send some dummy byte to fetch the response from the slave
+	SPI_SendData(SPI2,&dummy_write,1);
+
+	//read the ack byte received
+	SPI_ReceiveData(SPI2,&ack_byte,1);
+
+	uint8_t message[] = "Hello ! How are you ??";
+	if( SPI_VerifyResponse(ack_byte)) {
+		args[0] = strlen((char*)message);
+
+		//send arguments
+		SPI_SendData(SPI2,args,1); //sending length
+
+		//do dummy read to clear off the RXNE
+		SPI_ReceiveData(SPI2,&dummy_read,1);
+
+		delay();
+
+		//send message
+		for(int i = 0 ; i < args[0] ; i++){
+			SPI_SendData(SPI2,&message[i],1);
+			SPI_ReceiveData(SPI2,&dummy_read,1);
 		}
+	}
 
 
+	// 5. COMMAND_ID_READ
+	while( ! GPIO_ReadFromInputPin(GPIOA,GPIO_PIN_NO_0) );
+	delay();
 
-		// confirm the SPI is not busy
-		while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+	commandcode = COMMAND_ID_READ;
 
-		// disable after a data communication
-		SPI_PeripheralControl(SPI2, DISABLE);
+	//send command
+	SPI_SendData(SPI2,&commandcode,1);
+
+	//do dummy read to clear off the RXNE
+	SPI_ReceiveData(SPI2,&dummy_read,1);
+
+	//Send some dummy byte to fetch the response from the slave
+	SPI_SendData(SPI2,&dummy_write,1);
+
+	//read the ack byte received
+	SPI_ReceiveData(SPI2,&ack_byte,1);
+
+	uint8_t id[11];
+	uint32_t i=0;
+	if( SPI_VerifyResponse(ack_byte))
+	{
+		//read 10 bytes id from the slave
+		for(  i = 0 ; i < 10 ; i++)
+		{
+			//send dummy byte to fetch data from slave
+			SPI_SendData(SPI2,&dummy_write,1);
+			SPI_ReceiveData(SPI2,&id[i],1);
+		}
+		id[10] = '\0';
 
 	}
 
-	return 0;
+
+	// confirm the SPI is not busy
+	while(SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
+
+	// disable after a data communication
+	SPI_PeripheralControl(SPI2, DISABLE);
+
+} // end while
+
+return 0;
 }
