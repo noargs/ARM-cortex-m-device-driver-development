@@ -1,5 +1,8 @@
 #include <string.h>
+#include <stdio.h>
 #include "stm32f407xx.h"
+
+extern void initialise_monitor_handles();
 
 // // Arduino sketch located at [slave/spi/slave_cmd_handling]
 // PB14 --> SPI2_MISO
@@ -94,15 +97,25 @@ uint8_t SPI_VerifyResponse(uint8_t ack_byte) {
 	return 0;
 }
 
+
+
 int main(void) {
 
 uint8_t dummy_write = 0xff;
 uint8_t dummy_read;
 
+initialise_monitor_handles();
+
+printf("Application is running\n");
+
 GPIO_ButtonInit();
 
 // initialise the GPIO pins to behave as SPI2 pins
 SPI2_GPIOInits();
+
+printf("SPI2_GPIOInits() \n");
+
+
 
 // initialise/configure SPI2 peripheral
 SPI2_Inits();
@@ -146,10 +159,13 @@ while(1) {
 	SPI_ReceiveData(SPI2, &ack_byte, 1);
 
 	if (SPI_VerifyResponse(ack_byte)) {
-		// send arguments
 		args[0] = LED_PIN_9;
 		args[1] = LED_ON;
+
+		// send arguments
 		SPI_SendData(SPI2, args, 2);
+
+		printf("COMMAND_LED_CTRL Executed\n");
 	}
 
 
@@ -188,6 +204,7 @@ while(1) {
 
 		uint8_t analog_read;
 		SPI_ReceiveData(SPI2, &analog_read, 1);
+		printf("COMMAND_SENSOR_READ : %d\n", analog_read);
 	}
 
 
@@ -225,6 +242,7 @@ while(1) {
 
 		uint8_t led_status;
 		SPI_ReceiveData(SPI2, &led_status, 1);
+		printf("COMMAND_READ_LED : %d\n", led_status);
 	}
 
 
@@ -263,6 +281,8 @@ while(1) {
 			SPI_SendData(SPI2,&message[i],1);
 			SPI_ReceiveData(SPI2,&dummy_read,1);
 		}
+
+		printf("COMMAND_PRINT Executed \n");
 	}
 
 
@@ -297,6 +317,8 @@ while(1) {
 		}
 		id[10] = '\0';
 
+		printf("COMMAND_ID : %s \n", id);
+
 	}
 
 
@@ -305,6 +327,8 @@ while(1) {
 
 	// disable after a data communication
 	SPI_PeripheralControl(SPI2, DISABLE);
+
+	printf("SPI communication closed\n");
 
 } // end while
 
