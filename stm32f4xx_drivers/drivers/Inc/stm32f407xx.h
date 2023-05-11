@@ -297,7 +297,7 @@ typedef struct
 /*
  * IRQ (Interrupt Request) Number of STM32F407x MCU
  * NOTE: update these macros with valid values according
- *       to MCY
+ *       to your MCU
  */
 #define IRQ_NO_EXTI0                                6
 #define IRQ_NO_EXTI1                                7
@@ -306,6 +306,12 @@ typedef struct
 #define IRQ_NO_EXTI4                                10
 #define IRQ_NO_EXTI9_5                              23
 #define IRQ_NO_EXT15_I0                             40
+
+
+#define IRQ_NO_SPI1                                 35
+#define IRQ_NO_SPI2                                 36
+#define IRQ_NO_SPI3                                 51
+
 
 // possible priority levels for interrupts
 #define NVIC_IRQ_PRI0                               0
