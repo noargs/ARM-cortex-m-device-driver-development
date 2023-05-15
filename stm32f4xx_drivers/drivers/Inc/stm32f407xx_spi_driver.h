@@ -85,11 +85,16 @@ typedef struct
 #define SPI_RXNE_FLAG                          (1 << SPI_SR_RXNE)
 #define SPI_BUSY_FLAG                          (1 << SPI_SR_BSY)
 
-
 // Possible SPI application states
 #define SPI_READY                              0
 #define SPI_BUSY_IN_RX                         1
 #define SPI_BUSY_IN_TX                         2
+
+// Possible SPI Application events
+#define SPI_EVENT_TX_COMPLETE                  1
+#define SPI_EVENT_RX_COMPLETE                  2
+#define SPI_EVENT_OVR_ERR                      3
+#define SPI_EVENT_CRC_ERR                      4
 
 
 //                              [APIs supported by this driver]
@@ -113,13 +118,19 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *spi_handle, uint8_t *rx_buffer, uint32_t
 // IRQ configuration and ISR handling
 void SPI_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
 void SPI_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority);
-void SPI_IRQHandling(SPI_Handle_t *spix_handle);
+void SPI_IRQHandling(SPI_Handle_t *spi_handle);
 
 // other peripheral control APIs
 void SPI_PeripheralControl(SPI_RegDef_t *spix, uint8_t enable_or_disable);
 void SPI_SSIConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable);
 void SPI_SSOEConfig(SPI_RegDef_t *spix, uint8_t enable_or_disable);
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *spix, uint32_t flag_name);
+void SPI_ClearOVRFlag(SPI_RegDef_t *spix);
+void SPI_CloseTransmission(SPI_Handle_t *spi_handle);
+void SPI_CloseReception(SPI_Handle_t *spi_handle);
+
+// Application callback
+void SPI_ApplicationEventCallback(SPI_Handle_t *spi_handle, uint8_t APPLICATION_EVENT);
 
 
 

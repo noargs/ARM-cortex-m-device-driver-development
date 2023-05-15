@@ -1,5 +1,11 @@
 #include "stm32f407xx_spi_driver.h"
 
+
+static void spi_txe_interrupt_handle(SPI_Handle_t *spi_handle);
+static void spi_rxne_interrupt_handle(SPI_Handle_t *spi_handle);
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *spi_handle);
+
+
 // Peripheral clock setup
 void SPI_PCLK_Ctrl(SPI_RegDef_t *spix, uint8_t enable_or_disable) {
 	if (enable_or_disable == ENABLE) {
@@ -197,8 +203,129 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *spi_handle, uint8_t *rx_buffer, uint32_t
 }
 
 // IRQ configuration and ISR handling
+void SPI_IRQHandling(SPI_Handle_t *spi_handle){
+	uint8_t temp1, temp2;
+
+	// Check TXE
+	temp1 = spi_handle->SPIx->SR & (1 << SPI_SR_TXE);
+	temp2 = spi_handle->SPIx->CR2 & (1 << SPI_CR2_TXEIE);
+
+	if (temp1 && temp2){
+		// handle TXE
+		spi_txe_interrupt_handle(spi_handle);
+	}
+
+	// Check RXNE
+	temp1 = spi_handle->SPIx->SR & (1 << SPI_SR_RXNE);
+	temp2 = spi_handle->SPIx->CR2 & (1 << SPI_CR2_RXNEIE);
+
+	if (temp1 && temp2){
+		spi_rxne_interrupt_handle(spi_handle);
+
+	}
+
+	// Check only OVR `Overrun flag` in ERRIE
+	// MODF, CRCERR and FRE is not the scope of this course
+	temp1 = spi_handle->SPIx->SR & (1 << SPI_SR_OVR);
+	temp2 = spi_handle->SPIx->CR2 & (1 << SPI_CR2_ERRIE);
+
+	if (temp1 && temp2) {
+		spi_ovr_err_interrupt_handle(spi_handle);
+	}
+}
+
 void SPI_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable) { }
 
 void SPI_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority) { }
 
-void SPI_IRQHandling(SPI_Handle_t *spix_handle){ }
+
+// Helper functions implementation
+static void spi_txe_interrupt_handle(SPI_Handle_t *spi_handle){
+   // check the DFF bit in CR1
+	if (spi_handle->SPIx->CR1 & (1 << SPI_CR1_DFF)) {
+		// 16 bit DFF
+		// 1. load the data into the DR
+		spi_handle->SPIx->DR = *((uint16_t*)spi_handle->tx_buffer);
+		spi_handle->tx_len--;
+		spi_handle->tx_len--;
+		(uint16_t*)spi_handle->tx_buffer++;
+	} else {
+		// 8 bit DFF
+		spi_handle->SPIx->DR = *spi_handle->tx_buffer;
+		spi_handle->tx_len--;
+		spi_handle->tx_buffer++;
+	}
+
+	if (!spi_handle->tx_len) {
+		// tx_len = 0 then close the SPI transmission
+		// and inform the application that Tx is over
+
+		// prevent interrupt setting up the TXE flag in SR
+		SPI_CloseTransmission(spi_handle);
+		SPI_ApplicationEventCallback(spi_handle, SPI_EVENT_TX_COMPLETE);
+	}
+}
+
+static void spi_rxne_interrupt_handle(SPI_Handle_t *spi_handle){
+	//check the DFF bit in CR1
+	if (spi_handle->SPIx->CR1 & (1 << SPI_CR1_DFF)) {
+		// 16 bit DFF
+		// 1. load the data from the DR to Rxbuffer address
+		*((uint16_t*)spi_handle->rx_buffer) = spi_handle->SPIx->DR;
+		spi_handle->rx_len--;
+		spi_handle->rx_len--;
+		(uint16_t*)spi_handle->rx_buffer++;
+	} else {
+		// 8 bit DFF
+		*spi_handle->rx_buffer = spi_handle->SPIx->DR;
+		spi_handle->rx_len--;
+		spi_handle->rx_buffer++;
+	}
+
+	if (! spi_handle->rx_len) {
+		// rx_len = 0 then close the SPI reception
+		// and inform the application that Rx is over
+
+		// turn off the RXNEIE interrupt, prevent RXNE flag in SR
+		SPI_CloseReception(spi_handle);
+		SPI_ApplicationEventCallback(spi_handle, SPI_EVENT_RX_COMPLETE);
+	}
+}
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *spi_handle){
+
+	uint8_t temp;
+	// 1. clear the OVR flag
+	if (spi_handle->tx_state != SPI_BUSY_IN_TX) {
+		temp = spi_handle->SPIx->DR;
+		temp = spi_handle->SPIx->SR;
+	}
+	(void) temp;
+	// 2. inform the application
+	SPI_ApplicationEventCallback(spi_handle, SPI_EVENT_OVR_ERR);
+}
+
+void SPI_CloseTransmission(SPI_Handle_t *spi_handle) {
+	spi_handle->SPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
+	spi_handle->tx_buffer = NULL;
+	spi_handle->tx_len = 0;
+	spi_handle->tx_state = SPI_READY;
+}
+
+void SPI_CloseReception(SPI_Handle_t *spi_handle) {
+	spi_handle->SPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
+	spi_handle->rx_buffer = NULL;
+	spi_handle->rx_len = 0;
+	spi_handle->rx_state = SPI_READY;
+}
+
+void SPI_ClearOVRFlag(SPI_RegDef_t *spix) {
+	uint8_t temp;
+	temp = spix->DR;
+	temp = spix->SR;
+	(void) temp; // workaround warning `temp is not used`
+}
+
+__attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t *spi_handle, uint8_t APPLICATION_EVENT) {
+	// Weak implementation, the application may override this function
+}
+
