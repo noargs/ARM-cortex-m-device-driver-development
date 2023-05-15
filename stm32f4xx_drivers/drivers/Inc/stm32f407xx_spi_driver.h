@@ -20,6 +20,12 @@ typedef struct
 {
 	SPI_RegDef_t *SPIx;
 	SPI_Config_t SPIConfig;
+	uint8_t      *tx_buffer;
+	uint8_t      *rx_buffer;
+	uint32_t     tx_len;
+	uint32_t     rx_len;
+	uint8_t      tx_state;
+	uint8_t      rx_state;
 }SPI_Handle_t;
 
 /*
@@ -79,6 +85,13 @@ typedef struct
 #define SPI_RXNE_FLAG                          (1 << SPI_SR_RXNE)
 #define SPI_BUSY_FLAG                          (1 << SPI_SR_BSY)
 
+
+// Possible SPI application states
+#define SPI_READY                              0
+#define SPI_BUSY_IN_RX                         1
+#define SPI_BUSY_IN_TX                         2
+
+
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
 
@@ -94,8 +107,8 @@ void SPI_DeInit (SPI_RegDef_t *spix);
 void SPI_SendData(SPI_RegDef_t *spix, uint8_t *tx_buffer, uint32_t len);
 void SPI_ReceiveData(SPI_RegDef_t *spix, uint8_t *rx_buffer, uint32_t len);
 
-void SPI_SendDataIT(SPI_Handle_t *spi_handle, uint8_t *tx_buffer, uint32_t len);
-void SPI_ReceiveDataIT(SPI_Handle_t *spi_handle, uint8_t *rx_buffer, uint32_t len);
+uint8_t SPI_SendDataIT(SPI_Handle_t *spi_handle, uint8_t *tx_buffer, uint32_t len);
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *spi_handle, uint8_t *rx_buffer, uint32_t len);
 
 // IRQ configuration and ISR handling
 void SPI_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
