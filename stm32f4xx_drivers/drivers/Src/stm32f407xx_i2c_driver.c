@@ -78,6 +78,10 @@ void I2C_Init (I2C_Handle_t *i2c_handle)
 {
   uint32_t temp_reg = 0;
 
+  // enable the clock for the i2cx peripheral
+  I2C_PCLK_Ctrl(i2c_handle, ENABLE);
+
+
   // configure ACK control bit of CR1
   temp_reg |= i2c_handle->I2C_Config.i2c_ack_control << 10;
 
@@ -178,6 +182,39 @@ uint8_t I2C_GetFlagStatus(I2C_RegDef_t *i2cx, uint32_t flag_name)
   }
   return FLAG_RESET;
 }
+
+void I2C_PCLK_Ctrl (I2C_RegDef_t *i2cx, uint8_t enable_or_disable)
+{
+  if (enable_or_disable == ENABLE)
+  {
+	if (i2cx == I2C1)
+	{
+	  I2C1_PCLK_EN();
+	} else if (i2cx == I2C2)
+	{
+	  I2C2_PCLK_EN();
+	} else if (i2cx == I2C3)
+	{
+	  I2C3_PCLK_EN();
+	}
+  } else
+  {
+    // TODO
+  }
+
+}
+
+void I2C_PeripheralControl(I2C_RegDef_t *i2cx, uint8_t enable_or_disable)
+{
+  if (enable_or_disable == ENABLE)
+  {
+	i2cx->CR1 |= (1 << I2C_CR1_PE);
+  } else
+  {
+	  i2cx->CR1 &= ~(1 << 0);
+  }
+}
+
 
 
 
