@@ -3,7 +3,7 @@
 #include "stm32f407xx.h"
 
 #define MY_ADDR                      0x61
-#define SLAVE_ADDR                   0x64
+#define SLAVE_ADDR                   0x68
 
 I2C_Handle_t i2c_handle;
 uint8_t data[] = "We are testing I2C master Tx\n";
@@ -15,10 +15,10 @@ void delay(void)
 
 
 // PB6 -> SCL
-// PB9 -> SDA
+// PB7 -> SDA
 void I2C1_GPIOInits(void)
 {
-  // Configure pins (PB6, PB9) to behave as I2C pins
+  // Configure pins (PB6, PB7) to behave as I2C pins
   GPIO_Handle_t i2c_pins;
 
   i2c_pins.GPIOx = GPIOB;
@@ -33,7 +33,7 @@ void I2C1_GPIOInits(void)
   GPIO_Init(&i2c_pins);
 
   // SDA
-  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_9;
+  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_7;
   GPIO_Init(&i2c_pins);
 
 

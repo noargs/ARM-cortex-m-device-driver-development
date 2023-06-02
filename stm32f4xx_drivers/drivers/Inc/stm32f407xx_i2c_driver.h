@@ -60,6 +60,7 @@ void I2C_DeInit (I2C_RegDef_t *i2cx);
 
 // Data send and receive
 void I2C_MasterSendData(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr);
+void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr);
 
 // IRQ configuration and ISR handling
 void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
@@ -68,6 +69,7 @@ void I2C_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority);
 // other peripheral control APIs
 void I2C_PeripheralControl(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *i2cx, uint32_t flag_name);
+void I2C_ManageACK(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
 
 // Application callback
 void I2C_ApplicationEventCallback(I2C_Handle_t *i2c_handle, uint8_t APPLICATION_EVENT);
