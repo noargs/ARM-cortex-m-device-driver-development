@@ -2,25 +2,23 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
-#define MY_ADDR                      0x61
-#define SLAVE_ADDR                   0x68
-
-I2C_Handle_t i2c_handle;
-uint8_t data[] = "We are testing I2C master Tx\n";
+#define MY_ADDR                0x61
+#define SLAVE_ADDR             0x68
 
 void delay(void)
 {
-	for (uint32_t i=0; i < 500000/2; i++);
+  for (uint32_t i=0; i < 500000/2; i++);
 }
 
+I2C_Handle_t i2c_handle;
+
+uint8_t receive_buffer[32];
 
 // PB6 -> SCL
 // PB7 -> SDA
 void I2C1_GPIOInits(void)
 {
-  // Configure pins (PB6, PB7) to behave as I2C pins
   GPIO_Handle_t i2c_pins;
-
   i2c_pins.GPIOx = GPIOB;
   i2c_pins.GPIO_PinConfig.gpio_pin_mode = GPIO_MODE_ALTFN;
   i2c_pins.GPIO_PinConfig.gpio_pin_op_type = GPIO_OP_TYPE_OD;
@@ -35,10 +33,7 @@ void I2C1_GPIOInits(void)
   // SDA
   i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_7;
   GPIO_Init(&i2c_pins);
-
-
 }
-
 
 void I2C1_Inits(void)
 {
@@ -74,6 +69,9 @@ void GPIO_ButtonInit(void)
 
 int main(void)
 {
+  uint8_t command_code;
+  uint8_t len;
+
   GPIO_ButtonInit();
 
   // configure pins (PB6, PB7) to behave as I2C pins
@@ -93,8 +91,17 @@ int main(void)
 	// avoid button de-bouncing 200ms of delay
 	delay();
 
-	// send some data to the slave
-	I2C_MasterSendData(&i2c_handle, data, strlen((char*)data), SLAVE_ADDR);
+	// query the `length information` of the actual data
+	// which will be received in the next I2C transaction
+	command_code = 0x51;
+	I2C_MasterSendData(&i2c_handle, &command_code, 1, SLAVE_ADDR);
+	I2C_MasterReceiveData(&i2c_handle, &len, 1, SLAVE_ADDR);
+
+	// tell the Slave to send actual data whose length info was
+	// sent in the previous I2C transaction.
+	command_code = 0x52;
+	I2C_MasterSendData(&i2c_handle, &command_code, 1, SLAVE_ADDR);
+	I2C_MasterReceiveData(&i2c_handle, receive_buffer, len, SLAVE_ADDR);
   }
 
 }
