@@ -92,6 +92,7 @@ void I2C_Init (I2C_Handle_t *i2c_handle)
 
   // configure ACK control bit of CR1
   temp_reg |= i2c_handle->I2C_Config.i2c_ack_control << 10;
+  i2c_handle->I2Cx->CR1 = temp_reg;
 
   // configure the FREQ field of CR2
   temp_reg = 0;
@@ -240,7 +241,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t
   while (! I2C_GetFlagStatus(i2c_handle->I2Cx, I2C_FLAG_ADDR));
 
   // Procedure to read only 1 byte from the Slave
-  if (len = 1)
+  if (len == 1)
   {
 	// Disable Acking
 	I2C_ManageACK(i2c_handle->I2Cx, I2C_ACK_DISABLE);
@@ -257,7 +258,6 @@ void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t
 	// Read data into the buffer
     *rx_buffer = i2c_handle->I2Cx->DR;
 
-	return;
   }
 
   // Procedure to read data from Slave when len > 1
