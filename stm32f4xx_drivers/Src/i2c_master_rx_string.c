@@ -93,14 +93,14 @@ int main(void)
 	// query the `length information` of the actual data
 	// which will be received in the next I2C transaction
 	command_code = 0x51;
-	I2C_MasterSendData(&i2c1_handle, &command_code, 1, SLAVE_ADDR);
-	I2C_MasterReceiveData(&i2c1_handle, &len, 1, SLAVE_ADDR);
+	I2C_MasterSendData(&i2c1_handle, &command_code, 1, SLAVE_ADDR, I2C_ENABLE_SR);
+	I2C_MasterReceiveData(&i2c1_handle, &len, 1, SLAVE_ADDR, I2C_ENABLE_SR);
 
 	// tell the Slave to send `actual data` whose length info was
 	// queried in the previous I2C transaction.
 	command_code = 0x52;
-	I2C_MasterSendData(&i2c1_handle, &command_code, 1, SLAVE_ADDR);
-	I2C_MasterReceiveData(&i2c1_handle, receive_buffer, len, SLAVE_ADDR);
+	I2C_MasterSendData(&i2c1_handle, &command_code, 1, SLAVE_ADDR, I2C_ENABLE_SR);
+	I2C_MasterReceiveData(&i2c1_handle, receive_buffer, len, SLAVE_ADDR, I2C_DISABLE_SR);
 
 	receive_buffer[len+1] = '\0';
 

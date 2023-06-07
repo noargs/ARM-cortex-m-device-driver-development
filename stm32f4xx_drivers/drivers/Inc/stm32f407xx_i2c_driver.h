@@ -46,6 +46,10 @@ typedef struct
 #define I2C_FLAG_TIMEOUT                  (1 << I2C_SR1_TIMEOUT)
 
 
+#define I2C_DISABLE_SR                    RESET
+#define I2C_ENABLE_SR                     SET
+
+
 
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
@@ -59,8 +63,8 @@ void I2C_Init (I2C_Handle_t *i2c_handle);
 void I2C_DeInit (I2C_RegDef_t *i2cx);
 
 // Data send and receive
-void I2C_MasterSendData(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr);
-void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr);
+void I2C_MasterSendData(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr, uint8_t sr);
+void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr, uint8_t sr);
 
 // IRQ configuration and ISR handling
 void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
