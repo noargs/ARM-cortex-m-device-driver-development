@@ -2,7 +2,7 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
-extern void initialise_monitor_handles();
+//extern void initialise_monitor_handles();
 
 #define MY_ADDR                0x61
 #define SLAVE_ADDR             0x68
@@ -65,9 +65,9 @@ int main(void)
   uint8_t command_code;
   uint8_t len;
 
-  initialise_monitor_handles();
+//  initialise_monitor_handles();
 
-  printf("Application is running\n");
+//  printf("Application is running\n");
 
   GPIO_ButtonInit();
 
@@ -104,7 +104,7 @@ int main(void)
 
 	receive_buffer[len+1] = '\0';
 
-	printf("Data : %s", receive_buffer);
+//	printf("Data : %s", receive_buffer);
   }
 
 }

@@ -15,8 +15,21 @@ typedef struct
 {
   I2C_RegDef_t *I2Cx;
   I2C_Config_t I2C_Config;
+  uint8_t      *tx_buffer;
+  uint8_t      *rx_buffer;
+  uint32_t     tx_len;
+  uint32_t     rx_len;
+  uint8_t      tx_rx_state;
+  uint8_t      device_addr;
+  uint32_t     rx_size;
+  uint8_t      sr;
 }I2C_Handle_t;
 
+
+// @i2c_application_states
+#define I2C_READY                         0
+#define I2C_BUSY_IN_RX                    1
+#define I2C_BUSY_IN_TX                    2
 
 // @i2c_scl_speed
 #define I2C_SCL_SPEED_SM                  100000
@@ -65,6 +78,9 @@ void I2C_DeInit (I2C_RegDef_t *i2cx);
 // Data send and receive
 void I2C_MasterSendData(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr, uint8_t sr);
 void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr, uint8_t sr);
+
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr, uint8_t sr);
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr, uint8_t sr);
 
 // IRQ configuration and ISR handling
 void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
