@@ -326,6 +326,51 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, ui
 }
 
 
+void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable)
+{
+  if(enable_or_disable == ENABLE)
+  {
+	if(irq_number <= 31)
+	{
+	  // program ISER0 register
+	  *NVIC_ISER0 |= (1 << irq_number);
+	} else if(irq_number > 31 && irq_number < 64)
+	{
+	  // program ISER1 regsiter
+	  *NVIC_ISER1 |= (1 << (irq_number % 32));
+	} else if(irq_number >= 64 && irq_number < 96)
+	{
+	  // program ICER2 register
+	  *NVIC_ISER2 |= (1 << (irq_number % 64));
+	}
+  } else
+  {
+	if(irq_number <= 31)
+	{
+	  // program ICER0 register
+	  *NVIC_ICER0 |= (1 << irq_number);
+	} else if(irq_number > 31 && irq_number < 64)
+	{
+	  // program ICER1 regsiter
+	  *NVIC_ICER1 |= (1 << (irq_number % 32));
+	} else if(irq_number >= 64 && irq_number < 96)
+	{
+	  // program ICER2 register
+	  *NVIC_ICER2 |= (1 << (irq_number % 64));
+	}
+  }
+}
+
+
+void I2C_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority)
+{
+  uint8_t iprx = irq_number / 4;
+  uint8_t iprx_section = irq_number % 4;
+  uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+  *(NVIC_PR_BASE_ADDR + iprx) |= (irq_priority << shift_amount);
+}
+
+
 
 
 
