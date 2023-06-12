@@ -85,6 +85,8 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, ui
 // IRQ configuration and ISR handling
 void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
 void I2C_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority);
+void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle);
+void I2C_ER_IRQHandling(I2C_Handle_t *i2c_handle);
 
 // other peripheral control APIs
 void I2C_PeripheralControl(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
