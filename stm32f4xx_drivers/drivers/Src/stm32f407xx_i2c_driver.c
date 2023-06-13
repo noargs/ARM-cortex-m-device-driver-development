@@ -7,6 +7,10 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t *i2cx);
 static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t *i2cx, uint8_t slave_addr);
 static void I2C_ExecuteAddressPhaseRead(I2C_RegDef_t *i2cx, uint8_t slave_addr);
 static void I2C_ClearADDRFlag(I2C_Handle_t *i2c_handle);
+
+static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t *i2c_handle);
+static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle);
+
 static void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx);
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t *i2cx)
@@ -188,7 +192,7 @@ void I2C_MasterSendData(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t l
 
   // 5. Clear the ADDR flag according to its software sequence (first SR1 then SR2)
   //    Note: Until ADDR is cleared SCL will be stretched (pulled to LOW)
-  I2C_ClearADDRFlag(i2c_handle->I2Cx);
+  I2C_ClearADDRFlag(i2c_handle);
 
   // 6. Send the data until `len` becomes `0`
   while(len > 0)
@@ -280,7 +284,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t
 	I2C_ManageACK(i2c_handle->I2Cx, I2C_ACK_DISABLE);
 
 	// Clear the ADDR flag
-	I2C_ClearADDRFlag(i2c_handle->I2Cx);
+	I2C_ClearADDRFlag(i2c_handle);
 
 	// Wait until RxNE becomes 1
 	while (! I2C_GetFlagStatus(i2c_handle->I2Cx, I2C_FLAG_RXNE));
@@ -297,7 +301,7 @@ void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t
   if (len > 1)
   {
     // Clear the ADDR flag
-	I2C_ClearADDRFlag(i2c_handle->I2Cx);
+	I2C_ClearADDRFlag(i2c_handle);
 
 	// Read the data until len becomes 0
 	for (uint32_t i=len; i>0; i--)
@@ -446,7 +450,7 @@ void I2C_IRQPriorityConfig(uint8_t irq_number, uint32_t irq_priority)
   *(NVIC_PR_BASE_ADDR + iprx) |= (irq_priority << shift_amount);
 }
 
-void I2C_MasterHandleTXNEInterrupt(I2C_Handle_t *i2c_handle)
+static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t *i2c_handle)
 {
     if (i2c_handle->tx_len > 0)
     {
@@ -461,7 +465,7 @@ void I2C_MasterHandleTXNEInterrupt(I2C_Handle_t *i2c_handle)
     }
 }
 
-void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle)
+static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle)
 {
 	if (i2c_handle->rx_size == 1)
 	{
@@ -480,7 +484,7 @@ void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle)
 	  // read DR
 	  *i2c_handle->rx_buffer = i2c_handle->I2Cx->DR;
 	  i2c_handle->rx_buffer++;
-	  i2c_handle->rx_len;
+	  i2c_handle->rx_len--;
 	}
 
 	if (i2c_handle->rx_len == 0)
@@ -492,11 +496,44 @@ void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle)
 		  I2C_GenerateStopCondition(i2c_handle->I2Cx);
 
 	  //2. close the I2C rx
-	  I2C_CloseReceiveData();
+	  I2C_CloseReceiveData(i2c_handle);
 
 	  //3. notify the application
 	  I2C_ApplicationEventCallback(i2c_handle, I2C_EV_RX_COMPLETE);
 	}
+}
+
+void I2C_CloseReceiveData(I2C_Handle_t *i2c_handle)
+{
+  // disable ITBUFEN control bit
+  i2c_handle->I2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
+
+  // disable ITEVFEN control bit
+  i2c_handle->I2Cx->CR2 &= ~(1 << I2C_CR2_ITEVTEN);
+
+  i2c_handle->tx_rx_state = I2C_READY;
+  i2c_handle->rx_buffer = NULL;
+  i2c_handle->rx_len = 0;
+  i2c_handle->rx_size = 0;
+
+  if (i2c_handle->I2C_Config.i2c_ack_control == I2C_ACK_ENABLE)
+  {
+	I2C_ManageACK(i2c_handle->I2Cx, ENABLE);
+  }
+
+}
+
+void I2C_CloseSendData(I2C_Handle_t *i2c_handle)
+{
+  // disable ITBUFEN control bit
+  i2c_handle->I2Cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
+
+  // disable ITEVFEN control bit
+  i2c_handle->I2Cx->CR2 &= ~(1 << I2C_CR2_ITEVTEN);
+
+  i2c_handle->tx_rx_state = I2C_READY;
+  i2c_handle->tx_buffer = NULL;
+  i2c_handle->tx_len = 0;
 }
 
 void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
@@ -531,7 +568,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
   if (temp1 && temp3)
   {
 	// ADDR flag is set
-	I2C_ClearADDRFlag(i2c_handle->I2Cx);
+	I2C_ClearADDRFlag(i2c_handle);
   }
 
   temp3 = i2c_handle->I2Cx->SR1 & (1 << I2C_SR1_BTF);
@@ -552,7 +589,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
 				I2C_GenerateStopCondition(i2c_handle->I2Cx);
 
 			//2. reset all the member elements of the handle structure
-			I2C_CloseSendData();
+			I2C_CloseSendData(i2c_handle);
 
 			//3. notify the application about transmission complete
 			I2C_ApplicationEventCallback(i2c_handle, I2C_EV_TX_COMPLETE);
@@ -588,7 +625,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
 	  // We have to do the data transmission
 	  if (i2c_handle->tx_rx_state == I2C_BUSY_IN_TX)
 	  {
-        I2C_MasterHandleTXEInterrupt(i2c_handle);
+		  I2C_MasterHandleTXEInterrupt(i2c_handle);
 	  }
 
 	}

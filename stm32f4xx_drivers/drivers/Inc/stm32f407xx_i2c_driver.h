@@ -63,6 +63,11 @@ typedef struct
 #define I2C_ENABLE_SR                     SET
 
 
+// I2C application events macros
+#define I2C_EV_TX_COMPLETE                0
+#define I2C_EV_RX_COMPLETE                1
+#define I2C_EV_STOP                       2
+
 
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
@@ -81,6 +86,9 @@ void I2C_MasterReceiveData(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t
 
 uint8_t I2C_MasterSendDataIT(I2C_Handle_t *i2c_handle, uint8_t *tx_buffer, uint32_t len, uint8_t slave_addr, uint8_t sr);
 uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *i2c_handle, uint8_t *rx_buffer, uint8_t len, uint8_t slave_addr, uint8_t sr);
+
+void I2C_CloseSendData(I2C_Handle_t *i2c_handle);
+void I2C_CloseReceiveData(I2C_Handle_t *i2c_handle);
 
 // IRQ configuration and ISR handling
 void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable);
