@@ -669,7 +669,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
 		// The device is Slave
 		// confirm slave is in `Receiver mode` [Diagram at Reference Manual page:846]
 		// `TRA` bit [Reference Manual page:869]
-		if (i2c_handle->I2Cx->SR2 & (1 << I2C_SR2_TRA))
+		if (!(i2c_handle->I2Cx->SR2 & (1 << I2C_SR2_TRA)))
 		{
 		  I2C_ApplicationEventCallback(i2c_handle, I2C_EV_DATA_RECEIVE);
 		}

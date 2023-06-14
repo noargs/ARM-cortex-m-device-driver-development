@@ -63,7 +63,7 @@ typedef struct
 #define I2C_ENABLE_SR                     SET
 
 
-// I2C application events macros
+// I2C application events macros (self-declared values)
 #define I2C_EV_TX_COMPLETE                0
 #define I2C_EV_RX_COMPLETE                1
 #define I2C_EV_STOP                       2
