@@ -11,7 +11,6 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *i2c_handle);
 static void I2C_MasterHandleTXEInterrupt(I2C_Handle_t *i2c_handle);
 static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle);
 
-static void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx);
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t *i2cx)
 {
@@ -69,7 +68,7 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *i2c_handle)
   }
 }
 
-static void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx)
+void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx)
 {
   i2cx->CR1 |= (1 << I2C_CR1_STOP);
 }
@@ -654,6 +653,70 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
 
 void I2C_ER_IRQHandling(I2C_Handle_t *i2c_handle)
 {
+  uint32_t temp1, temp2;
+
+  // find out the status of ITERREN control in the CR2
+  temp2 = (i2c_handle->I2Cx->CR2) & (1 << I2C_CR2_ITERREN);
+
+  // ------  Check for Bus error --------
+  temp1 = (i2c_handle->I2Cx->SR1) & (1 << I2C_SR1_BERR);
+  if (temp1 && temp2)
+  {
+	// Bus error
+	// clear the Bus error flag
+	i2c_handle->I2Cx->SR1 &= ~(1 << I2C_SR1_BERR);
+
+	// notify the application about the error
+	I2C_ApplicationEventCallback(i2c_handle, I2C_ERROR_BERR);
+  }
+
+  // ------  Check for Arbitration lost error --------
+  temp1 = (i2c_handle->I2Cx->SR1) & (1 << I2C_SR1_ARLO);
+  if (temp1 && temp2)
+  {
+	// Arbitration lost error
+	// clear the Arbitration lost error flag
+	i2c_handle->I2Cx->SR1 &= ~(1 << I2C_SR1_ARLO);
+
+	// notify the application about the error
+	I2C_ApplicationEventCallback(i2c_handle, I2C_ERROR_ARLO);
+  }
+
+  // ------  Check for Failure error --------
+  temp1 = (i2c_handle->I2Cx->SR1) & (1 << I2C_SR1_AF);
+  if (temp1 && temp2)
+  {
+	// ACK falure error
+	// clear the ACK failure error flag
+	i2c_handle->I2Cx->SR1 &= ~(1 << I2C_SR1_AF);
+
+	// notify the application about the error
+	I2C_ApplicationEventCallback(i2c_handle, I2C_ERROR_AF);
+  }
+
+  // ------  Check for Overrun/Underrn error --------
+  temp1 = (i2c_handle->I2Cx->SR1) & (1 << I2C_SR1_OVR);
+  if (temp1 && temp2)
+  {
+	// Overrun/Underrun error
+	// clear the Overrun/underrun error flag
+	i2c_handle->I2Cx->SR1 &= ~(1 << I2C_SR1_OVR);
+
+	// notify the application about the error
+	I2C_ApplicationEventCallback(i2c_handle, I2C_ERROR_OVR);
+  }
+
+  // ------  Check for Timeout error --------
+  temp1 = (i2c_handle->I2Cx->SR1) & (1 << I2C_SR1_TIMEOUT);
+  if (temp1 && temp2)
+  {
+	// Timeout error
+	// clear the Timeout error flag
+	i2c_handle->I2Cx->SR1 &= ~(1 << I2C_SR1_TIMEOUT);
+
+	// notify the application about the error
+	I2C_ApplicationEventCallback(i2c_handle, I2C_ERROR_TIMEOUT);
+  }
 
 }
 

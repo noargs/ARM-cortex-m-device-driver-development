@@ -67,6 +67,11 @@ typedef struct
 #define I2C_EV_TX_COMPLETE                0
 #define I2C_EV_RX_COMPLETE                1
 #define I2C_EV_STOP                       2
+#define I2C_ERROR_BERR                    3
+#define I2C_ERROR_ARLO                    4
+#define I2C_ERROR_AF                      5
+#define I2C_ERROR_OVR                     6
+#define I2C_ERROR_TIMEOUT                 7
 
 
 //                              [APIs supported by this driver]
@@ -100,6 +105,7 @@ void I2C_ER_IRQHandling(I2C_Handle_t *i2c_handle);
 void I2C_PeripheralControl(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *i2cx, uint32_t flag_name);
 void I2C_ManageACK(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
+void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx);
 
 // Application callback
 void I2C_ApplicationEventCallback(I2C_Handle_t *i2c_handle, uint8_t APPLICATION_EVENT);
