@@ -113,6 +113,8 @@ uint8_t I2C_GetFlagStatus(I2C_RegDef_t *i2cx, uint32_t flag_name);
 void I2C_ManageACK(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
 void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx);
 
+void I2C_SlaveEnableDisableCallbackEvents(I2C_RegDef_t *i2cx, uint8_t enable_or_disable);
+
 // Application callback
 void I2C_ApplicationEventCallback(I2C_Handle_t *i2c_handle, uint8_t APPLICATION_EVENT);
 

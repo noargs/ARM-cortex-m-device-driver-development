@@ -73,6 +73,22 @@ void I2C_GenerateStopCondition(I2C_RegDef_t *i2cx)
   i2cx->CR1 |= (1 << I2C_CR1_STOP);
 }
 
+void I2C_SlaveEnableDisableCallbackEvents(I2C_RegDef_t *i2cx, uint8_t enable_or_disable)
+{
+  if (enable_or_disable == ENABLE)
+  {
+	i2cx->CR2 |= (1 << I2C_CR2_ITEVTEN);
+	i2cx->CR2 |= (1 << I2C_CR2_ITBUFEN);
+	i2cx->CR2 |= (1 << I2C_CR2_ITERREN);
+  }
+  else
+  {
+	i2cx->CR2 &= ~(1 << I2C_CR2_ITEVTEN);
+	i2cx->CR2 &= ~(1 << I2C_CR2_ITBUFEN);
+	i2cx->CR2 &= ~(1 << I2C_CR2_ITERREN);
+  }
+}
+
 uint32_t RCC_GetPCLK1Value(void)
 {
   uint32_t pclk1, system_clock;
@@ -133,6 +149,7 @@ void I2C_Init (I2C_Handle_t *i2c_handle)
   i2c_handle->I2Cx->CR2 = (temp_reg & 0x3F);
 
   // program the device own address Reference Manual page:864
+  temp_reg = 0;
   temp_reg |= i2c_handle->I2C_Config.i2c_device_address << 1;
   temp_reg |= (1 << 14);
   i2c_handle->I2Cx->OAR1 = temp_reg;
@@ -419,7 +436,7 @@ void I2C_IRQInterruptConfig(uint8_t irq_number, uint8_t enable_or_disable)
 	  *NVIC_ISER1 |= (1 << (irq_number % 32));
 	} else if(irq_number >= 64 && irq_number < 96)
 	{
-	  // program ICER2 register
+	  // program ISER2 register
 	  *NVIC_ISER2 |= (1 << (irq_number % 64));
 	}
   } else
