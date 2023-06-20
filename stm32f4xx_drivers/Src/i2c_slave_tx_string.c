@@ -13,16 +13,17 @@
 #define SLAVE_ADDR             0x68
 #define MY_ADDR                SLAVE_ADDR
 
+I2C_Handle_t i2c1_handle;
+
+// limit characters to 32 bytes, Arduino Wire lib limitation
+uint8_t tx_buffer[32] = "STM32 Slave mode testing..";
+
 
 void delay(void)
 {
   for (uint32_t i=0; i < 500000/2; i++);
 }
 
-I2C_Handle_t i2c1_handle;
-
-// limit characters to 32 bytes, Arduino Wire lib limitation
-uint8_t tx_buffer[32] = "STM32 Slave mode testing";
 
 // PB8 -> SCL
 // PB9 -> SDA
@@ -39,11 +40,11 @@ void I2C1_GPIOInits(void)
   i2c_pins.GPIO_PinConfig.gpio_pin_speed = GPIO_SPEED_FAST;
 
   // SCL
-  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_8;
+  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_6;
   GPIO_Init(&i2c_pins);
 
   // SDA
-  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_9;
+  i2c_pins.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_7;
   GPIO_Init(&i2c_pins);
 }
 
@@ -57,23 +58,9 @@ void I2C1_Inits(void)
   I2C_Init(&i2c1_handle);
 }
 
-void GPIO_ButtonInit(void)
-{
-  GPIO_Handle_t gpio_button;
-
-  // Button configuration
-  gpio_button.GPIOx = GPIOA;
-  gpio_button.GPIO_PinConfig.gpio_pin_number = GPIO_PIN_NO_0;
-  gpio_button.GPIO_PinConfig.gpio_pin_mode = GPIO_MODE_IN;
-  gpio_button.GPIO_PinConfig.gpio_pin_speed = GPIO_SPEED_FAST;
-  gpio_button.GPIO_PinConfig.gpio_pin_pu_pd_control = GPIO_NO_PUPD;
-  GPIO_Init(&gpio_button);
-}
 
 int main(void)
 {
-
-  GPIO_ButtonInit();
 
   // configure pins (PB8, PB9) to behave as I2C pins
   I2C1_GPIOInits();
@@ -129,6 +116,7 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *i2c_handle, uint8_t APPLICATION_
   {
 	// Slave has to read the data waiting.
 	command_code = I2C_SlaveReceiveData(i2c_handle->I2Cx);
+
   } else if (APPLICATION_EVENT == I2C_ERROR_AF)
   {
 	// This only happens in Slave tx (transmission)

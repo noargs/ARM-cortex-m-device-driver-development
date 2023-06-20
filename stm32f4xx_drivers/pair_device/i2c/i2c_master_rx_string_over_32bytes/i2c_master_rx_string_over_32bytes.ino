@@ -5,10 +5,10 @@
 // Include the required Wire library for I2C<br>#include <Wire.h>
 int LED = 13;
 
-uint8_t rcv_buf[32];
+uint8_t rcv_buf[512];
 
-int data_len=0;
-#define SLAVE_ADDR 0x69
+uint32_t data_len=0,w_ptr = 0;
+#define SLAVE_ADDR 0x68
 
 void setup() {
     Serial.begin(9600);
@@ -26,6 +26,7 @@ void setup() {
 
 void loop() {
 
+uint32_t rem_len=0,last_read=0;
   Serial.println("Arduino Master");
   Serial.println("Send character \"s\" to begin");
   Serial.println("-----------------------------");
@@ -43,30 +44,49 @@ void loop() {
   Wire.endTransmission();
 
 
-  Wire.requestFrom(SLAVE_ADDR,1); // Request the transmitted two bytes from the two registers
+  Wire.requestFrom(SLAVE_ADDR,4); // Request the transmitted two bytes from the two registers
 
+ for(uint32_t len = 0 ; len < 4; len++)
+ {
   if(Wire.available()) {  // 
-    data_len = Wire.read(); // Reads the data 
+    uint32_t data = (uint32_t)Wire.read();
+    data_len |= ( data << ( 8 * len) ); // Reads the data 
   }
+ }
+ //data_len = 0x2f8;
   Serial.print("Data Length:");
-  Serial.println(String(data_len,DEC));
+  Serial.println(data_len);
 
   Wire.beginTransmission(SLAVE_ADDR);
   
   Wire.write(0X52); //Send this command to ask data
   Wire.endTransmission();
 
-  Wire.requestFrom(SLAVE_ADDR,data_len);
-
+  rem_len = data_len;
+ while(rem_len > 0)
+ {
+   if(rem_len <= 32)
+   {
+      Wire.requestFrom(SLAVE_ADDR,rem_len);
+      last_read = rem_len;
+      rem_len = 0;
+   }else
+   {
+    Wire.requestFrom(SLAVE_ADDR,32);
+    last_read = 32;
+    rem_len -= 32;
+   }
   uint32_t i=0;
-  for( i =0; i <= data_len ; i++)
+  for( i =0; i <= last_read ; i++)
   {
     if(Wire.available()) {  // 
-      rcv_buf[i] = Wire.read(); // Reads the data 
+      rcv_buf[w_ptr++] = Wire.read(); // Reads the data 
     }
   }
-  rcv_buf[i] = '\0';
-
+ }
+ 
+  rcv_buf[w_ptr] = '\0';
+ w_ptr = 0;
   Serial.print("Data:");
   Serial.println((char*)rcv_buf);
   Serial.println("*********************END*********************");

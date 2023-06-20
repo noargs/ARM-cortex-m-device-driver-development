@@ -29,7 +29,7 @@ void loop() {
   Serial.println("Arduino Master");
   Serial.println("Send character \"s\" to begin");
   Serial.println("-----------------------------");
-
+   
    while(!Serial.available());
   char in_read=Serial.read();
 

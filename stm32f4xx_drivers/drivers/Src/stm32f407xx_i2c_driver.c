@@ -48,6 +48,7 @@ static void I2C_ClearADDRFlag(I2C_Handle_t *i2c_handle)
 		// clear the ADDR flag (read SR1, read SR2)
 		dummy_read = i2c_handle->I2Cx->SR1;
 		dummy_read = i2c_handle->I2Cx->SR2;
+		(void)dummy_read;
 	  }
 	  else
 	  {
@@ -509,7 +510,9 @@ static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *i2c_handle)
 
 	  //1. generate the STOP condition
 	  if (i2c_handle->sr == I2C_DISABLE_SR)
-		  I2C_GenerateStopCondition(i2c_handle->I2Cx);
+	  {
+		I2C_GenerateStopCondition(i2c_handle->I2Cx);
+	  }
 
 	  //2. close the I2C rx
 	  I2C_CloseReceiveData(i2c_handle);
@@ -623,7 +626,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *i2c_handle)
 	  }
 	} else if (i2c_handle->tx_rx_state == I2C_BUSY_IN_RX)
 	{
-
+           ;
 	}
 
   }
