@@ -135,6 +135,67 @@ void USART_SendData(USART_Handle_t *usart_handle, uint8_t *tx_buffer, uint32_t l
 }
 
 
+void USART_ReceiveData(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_t len)
+{
+  // loop over until `len` number of byters are received
+  for (uint32_t i = 0; i < len; i++)
+  {
+	// wait until RXNE flag is set in the SR
+	while (! USART_GetFlagStatus(usart_handle->usartx, USART_FLAG_RXNE));
+
+	// check the usart @word_length to decide whether to receive 9 bit data frame or 8 bit
+	if (usart_handle->usart_config.usart_word_length == USART_WORDLEN_9BITS)
+	{
+	  // receive 9bit data in a frame
+
+	  // check are we using @usart_parity_control or not
+	  if (usart_handle->usart_config.usart_parity_control == USART_WORDLEN_9BITS)
+	  {
+		// no parity is used. so, all 9bits will be of user data
+
+		// read only first 9 bits, hence mask the DR with 0x01FF
+		*((uint16_t*)rx_buffer) = (usart_handle->usartx->DR & (uint16_t)0x01FF);
+
+		// increment the rx_buffer twice
+		rx_buffer++;
+		rx_buffer++;
+	  }
+	  else
+	  {
+		// parity is used, so 8bits will be of user data and 1 is parity bit
+		*rx_buffer = (usart_handle->usartx->DR & (uint8_t)0xFF);
+
+		// increment the buffer
+		rx_buffer++;
+	  }
+	}
+	else
+	{
+	  // receiving 8 bit data in a frame
+
+	  // check if we are using @usart_parity_control or not
+	  if (usart_handle->usart_config.usart_parity_control == USART_PARITY_DISABLE)
+	  {
+		// no parity is used, hence all 8 bits will be of user data
+
+		// read 8 bits from DR
+		*rx_buffer = (uint8_t)(usart_handle->usartx->DR & (uint8_t)0xFF);
+	  }
+	  else
+	  {
+		// parity is use, hence 7bits will be of user data and 1 bit is parity
+		// read only 7 bits, hence mask the DR with 0x7F
+		*rx_buffer = (uint8_t) (usart_handle->usartx->DR & (uint8_t)0x7F);
+	  }
+
+	  // increment the rx_buffer
+	  rx_buffer++;
+	}
+  }
+
+}
+
+
 void USART_PeripheralControl(USART_RegDef_t *usartx, uint8_t ENABLE_OR_DISABLE)
 {
   if (ENABLE_OR_DISABLE == ENABLE)
