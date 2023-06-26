@@ -196,6 +196,47 @@ void USART_ReceiveData(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_
 }
 
 
+uint8_t USART_SendDataIT(USART_Handle_t *usart_handle, uint8_t *tx_buffer, uint32_t len)
+{
+  uint8_t tx_state = usart_handle->tx_busy_state;
+
+  if (tx_state != USART_BUSY_IN_TX)
+  {
+	usart_handle->tx_len = len;
+	usart_handle->tx_buffer = tx_buffer;
+	usart_handle->tx_busy_state = USART_BUSY_IN_TX;
+
+	// enable interrupt for TXE
+    usart_handle->usartx->CR1 |= (1 << USART_CR1_TXEIE);
+
+	// enable interrupt for TC
+    usart_handle->usartx->CR1 |= (1 << USART_CR1_TCIE);
+  }
+
+  return tx_state;
+}
+
+
+uint8_t USART_ReceiveDataIT(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_t len)
+{
+  uint8_t rx_state = usart_handle->tx_busy_state;
+
+  if (rx_state != USART_BUSY_IN_RX)
+  {
+	usart_handle->rx_len = len;
+	usart_handle->rx_buffer = rx_buffer;
+	usart_handle->rx_busy_state = USART_BUSY_IN_RX;
+
+	(void)usart_handle->usartx->DR;
+
+	// enable interrupt for RXNE
+	usart_handle->usartx->CR1 |= (1 << USART_CR1_RXNEIE);
+  }
+
+  return rx_state;
+}
+
+
 void USART_PeripheralControl(USART_RegDef_t *usartx, uint8_t ENABLE_OR_DISABLE)
 {
   if (ENABLE_OR_DISABLE == ENABLE)

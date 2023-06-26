@@ -17,9 +17,18 @@ typedef struct
 {
   USART_RegDef_t *usartx;
   USART_Config_t usart_config;
+  uint8_t *tx_buffer;
+  uint8_t *rx_buffer;
+  uint32_t tx_len;
+  uint32_t rx_len;
+  uint8_t tx_busy_state;
+  uint8_t rx_busy_state;
 }USART_Handle_t;
 
 // @usart_application_states
+#define USART_READY                      0
+#define USART_BUSY_IN_RX                 1
+#define USART_BUSY_IN_TX                 2
 
 // @usart_mode
 #define USART_MODE_ONLY_TX                0
