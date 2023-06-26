@@ -1,7 +1,91 @@
 #include "stm32f407xx_usart_driver.h"
 
+void USART_Init(USART_Handle_t *usart_handle)
+{
+  uint32 temp_reg = 0;
+
+  //                    [ configuration of CR1 ]
+  // enable the clock for given USART peripheral
+  USART_PCLKControl(usart_handle->usartx, ENABLE);
+
+  // enable USART Tx and Rx engines according to the @usart_mode configuration item
+  if (usart_handle->usart_config.usart_mode == USART_MODE_ONLY_RX)
+  {
+	// enable the `receiver` bit field
+	temp_reg = (1 << USART_CR1_RE);
+  } else if (usart_handle->usart_config.usart_mode == USART_MODE_ONLY_TX)
+  {
+	// enable the `transmitter` bit field
+	temp_reg = (1 << USART_CR1_TE);
+  } else if (usart_handle->usart_config.usart_mode == USART_MODE_TXRX)
+  {
+	// enable the both `receiver` and `transmitter` bit fields
+	temp_reg |= ((1 << USART_CR1_RE) | (1 << USART_CR1_TE));
+  }
+
+  // configure the @word_length configuration item
+  temp_reg |= usart_handle->usart_config.usart_word_length << USART_CR1_M;
+
+  // configure @usart_parity_control bit field
+  if (usart_handle->usart_config.usart_parity_control == USART_PARITY_EN_EVEN)
+  {
+	// enable parity control
+	temp_reg |= (1 << USART_CR1_PCE);
+
+	// enable EVEN parity
+	// not required as EVEN parity will be selected by default upon enabling the parity control
+  } else if (usart_handle->usart_config.usart_parity_control == USART_PARITY_EN_ODD)
+  {
+	// enable the parity control
+	temp_reg |= (1 << USART_CR1_PCE);
+
+	// enable the ODD parity
+	temp_reg |= (1 << USART_CR1_PS);
+  }
+
+  // program the CR1 register
+  usart_handle->usartx->CR1 |= temp_reg;
+
+  //                    [ configuration of CR2 ]
+
+  temp_reg = 0;
+
+  // configure the @usart_no_of_stop_bits inserted during USART frame transmission
+  temp_reg |= usart_handle->usart_config.usart_no_of_stop_bits << USART_CR2_STOP;
+
+  // program the CR2 register
+  usart_handle->usartx->CR2 |= temp_reg;
+
+  //                    [ configuration of CR3 ]
+
+  temp_reg = 0;
+
+  // configure USART hardware flow control @usart_hw_flow_control
+  if (usart_handle->usart_config.usart_hw_flow_control == USART_HW_FLOW_CONTROL_CTS)
+  {
+	// enable CTS flow control
+	temp_reg |= (1 << USART_CR3_CTSE);
+  } else if (usart_handle->usart_config.usart_hw_flow_control == USART_HW_FLOW_CONTROL_RTS)
+  {
+	// enable RTS flow control
+	temp_reg |= (1 << USART_CR3_RTSE);
+  } else if (usart_handle->usart_config.usart_hw_flow_control == USART_HW_FLOW_CONTROL_CTS_RTS)
+  {
+	// enable both CTS and RTS flow control
+	temp_reg |= ((1 << USART_CR3_RTSE) | (1 << USART_CR3_CTSE));
+  }
+
+  // program the CR3 register
+  usart_handle->usartx->CR3 |= temp_reg;
+
+  //                    [ configuration of BRR (Baudrate register) ]
+
+  temp_reg = 0;
+
+  // configure the baudrate
 
 
+}
 
 void USART_PeripheralControl(USART_RegDef_t *usartx, uint8_t ENABLE_OR_DISABLE)
 {
