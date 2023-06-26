@@ -19,6 +19,8 @@ typedef struct
   USART_Config_t usart_config;
 }USART_Handle_t;
 
+// @usart_application_states
+
 // @usart_mode
 #define USART_MODE_ONLY_TX                0
 #define USART_MODE_ONLY_RX                1
@@ -59,6 +61,13 @@ typedef struct
 #define USART_HW_FLOW_CONTROL_RTS         2
 #define USART_HW_FLOW_CONTROL_CTS_RTS     3
 
+// USART related Status flags (i.e. Status Register's) definitions
+#define USART_FLAG_TXE                    (1 << USART_SR_TXE)
+#define USART_FLAG_RXNE                   (1 << USART_SR_RXNE)
+#define USART_FLAG_TC                     (1 << USART_SR_TC)
+
+// USART application events macros (self-declared values)
+
 
 //                              [APIs supported by this driver]
 //              For more information about the APIs check the function definitions
@@ -71,8 +80,8 @@ void USART_Init(USART_Handle_t *usart_handle);
 void USART_DeInit(USART_Handle_t *usart_handle);
 
 // Data send and receive
-void USART_SendData(USART_RegDef_t *usartx, uint8_t *tx_buffer, uint32_t len);
-void USART_ReceiveData(USART_RegDef_t *usartx, uint8_t *rx_buffer, uint32_t len);
+void USART_SendData(USART_Handle_t *usart_handle, uint8_t *tx_buffer, uint32_t len);
+void USART_ReceiveData(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_t len);
 uint8_t USART_SendDataIT(USART_Handle_t *usart_handle, uint8_t *tx_buffer, uint32_t len);
 uint8_t USART_ReceiveDataIT(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_t len);
 
