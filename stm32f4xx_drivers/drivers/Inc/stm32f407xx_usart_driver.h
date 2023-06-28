@@ -103,6 +103,7 @@ void USART_IRQHandling(USART_Handle_t *usart_handle);
 uint8_t USART_GetFlagStatus(USART_RegDef_t *usartx, uint8_t status_flag_name);
 void USART_ClearFlag(USART_RegDef_t *usartx, uint16_t status_flag_name);
 void USART_PeripheralControl(USART_RegDef_t *usartx, uint8_t ENABLE_OR_DISABLE);
+void USART_SetBaudRate(USART_RegDef_t *usartx, uint32_t baud_rate);
 
 // Application callbacks
 void USART_ApplicationEventCallback(USART_Handle_t *usart_handle, uint8_t APPLICATION_EVENT);
