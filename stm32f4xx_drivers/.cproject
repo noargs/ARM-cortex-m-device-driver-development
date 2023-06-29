@@ -74,12 +74,12 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.282015579" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.114557659.107218073" name="i2c_slave_tx_string.c" rcbsApplicability="disable" resourcePath="Src/i2c_slave_tx_string.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769.484784251">
-						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769.484784251" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769"/>
+					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.114557659.1521011513" name="i2c_slave_tx_string_over_32bytes.c" rcbsApplicability="disable" resourcePath="Src/i2c_slave_tx_string_over_32bytes.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769.1582577889">
+						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769.1582577889" name="MCU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.1419905769"/>
 					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="i2c_slave_tx_string.c|i2c_master_rx_string_interrupt.c|sysmem.c|led_user_button.c|i2c_master_rx_string.c|led_ext_button.c|led_ex_button_interrupt_falling_edge.c|spi_tx_testing.c|led_toggle_pushpull.c|led_toggle.c|syscalls.c|slave_cmd_handling.c|led_toggle_opendrain.c|spi_message_recieve_interrupt.c|spi_txonly_arduino.c|main.c|i2c_master_tx_string.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
+						<entry excluding="i2c_slave_tx_string_over_32bytes.c|i2c_slave_tx_string.c|i2c_master_rx_string_interrupt.c|sysmem.c|led_user_button.c|i2c_master_rx_string.c|led_ext_button.c|led_ex_button_interrupt_falling_edge.c|spi_tx_testing.c|led_toggle_pushpull.c|led_toggle.c|syscalls.c|slave_cmd_handling.c|led_toggle_opendrain.c|spi_message_recieve_interrupt.c|spi_txonly_arduino.c|main.c|i2c_master_tx_string.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Startup"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="drivers"/>
 					</sourceEntries>

@@ -12,11 +12,11 @@ void USART_Init(USART_Handle_t *usart_handle)
   if (usart_handle->usart_config.usart_mode == USART_MODE_ONLY_RX)
   {
 	// enable the `receiver` bit field
-	temp_reg = (1 << USART_CR1_RE);
+	temp_reg |= (1 << USART_CR1_RE);
   } else if (usart_handle->usart_config.usart_mode == USART_MODE_ONLY_TX)
   {
 	// enable the `transmitter` bit field
-	temp_reg = (1 << USART_CR1_TE);
+	temp_reg |= (1 << USART_CR1_TE);
   } else if (usart_handle->usart_config.usart_mode == USART_MODE_TXRX)
   {
 	// enable the both `receiver` and `transmitter` bit fields
@@ -44,7 +44,7 @@ void USART_Init(USART_Handle_t *usart_handle)
   }
 
   // program the CR1 register
-  usart_handle->usartx->CR1 |= temp_reg;
+  usart_handle->usartx->CR1 = temp_reg;
 
   //                    -[ configuration of CR2 ]-
 
@@ -54,7 +54,7 @@ void USART_Init(USART_Handle_t *usart_handle)
   temp_reg |= usart_handle->usart_config.usart_no_of_stop_bits << USART_CR2_STOP;
 
   // program the CR2 register
-  usart_handle->usartx->CR2 |= temp_reg;
+  usart_handle->usartx->CR2 = temp_reg;
 
   //                    -[ configuration of CR3 ]-
 
@@ -76,7 +76,7 @@ void USART_Init(USART_Handle_t *usart_handle)
   }
 
   // program the CR3 register
-  usart_handle->usartx->CR3 |= temp_reg;
+  usart_handle->usartx->CR3 = temp_reg;
 
   //                    -[ configuration of BRR (Baudrate register) ]-
 
@@ -265,7 +265,7 @@ void USART_SetBaudRate(USART_RegDef_t *usartx, uint32_t baud_rate)
   else
   {
 	// oversampling by 16
-	usartdiv = ((25 * pclkx) / (2 * baud_rate));
+	usartdiv = ((25 * pclkx) / (4 * baud_rate));
   }
 
   // calculate the Mantissa part
