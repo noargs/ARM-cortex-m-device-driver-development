@@ -2,6 +2,9 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
+// Arduino sketch for testing this User application.
+// pair_device/usart/./usart_rx_string.ino
+
 char msg[1024] = "UART Tx testing, https://github.com/noargs\n\r";
 
 USART_Handle_t usart2_handle;
