@@ -503,8 +503,6 @@ void USART_IRQHandling(USART_Handle_t *usart_handle)
 			*usart_handle->rx_buffer = (usart_handle->usartx->DR & (uint8_t)0xFF);
 
 			usart_handle->rx_buffer++;
-
-			// decrement the length
 			usart_handle->rx_len -= 1;
 		  }
 		}
@@ -526,7 +524,7 @@ void USART_IRQHandling(USART_Handle_t *usart_handle)
 		  }
 
 		  usart_handle->rx_buffer++;
-		  usart_handle->rx_len -=1;
+		  usart_handle->rx_len -= 1;
 		}
 	  }
 
