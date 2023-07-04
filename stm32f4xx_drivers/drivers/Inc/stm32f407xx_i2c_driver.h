@@ -13,8 +13,8 @@ typedef struct
 
 typedef struct
 {
-  I2C_RegDef_t *I2Cx;
-  I2C_Config_t I2C_Config;
+  I2C_RegDef_t *i2cx;
+  I2C_Config_t i2c_config;
   uint8_t      *tx_buffer;
   uint8_t      *rx_buffer;
   uint32_t     tx_len;

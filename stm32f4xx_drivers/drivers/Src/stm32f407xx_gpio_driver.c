@@ -74,16 +74,16 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 	uint32_t temp = 0;
 
 	// enable the peripheral clock
-	GPIO_PCLK_Ctrl(gpio_handle->GPIOx, ENABLE);
+	GPIO_PCLK_Ctrl(gpio_handle->gpiox, ENABLE);
 
 	// 1. configure the mode of gpio pin
-	if (gpio_handle->GPIO_PinConfig.gpio_pin_mode <= GPIO_MODE_ANALOG) {
+	if (gpio_handle->gpio_config.gpio_pin_mode <= GPIO_MODE_ANALOG) {
 		// -[none interrupt mode]-
-		temp = (gpio_handle->GPIO_PinConfig.gpio_pin_mode
-				<< (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
-		gpio_handle->GPIOx->MODER &= ~(0x3
-				<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
-		gpio_handle->GPIOx->MODER |= temp;
+		temp = (gpio_handle->gpio_config.gpio_pin_mode
+				<< (2 * gpio_handle->gpio_config.gpio_pin_number));
+		gpio_handle->gpiox->MODER &= ~(0x3
+				<< gpio_handle->gpio_config.gpio_pin_number);
+		gpio_handle->gpiox->MODER |= temp;
 	} else {
 		// -[interrupt mode]-
 
@@ -96,72 +96,72 @@ void GPIO_Init(GPIO_Handle_t *gpio_handle) {
 		//6. Enable interrupt reception on that IRQ number (Processor side)
 		//7. Implement IRQ handler
 
-		if (gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_FT) {
+		if (gpio_handle->gpio_config.gpio_pin_mode == GPIO_MODE_IT_FT) {
 			// configure the FTSR (Falling trigger selection register)
 			// FTSR is the register of EXTI
-			EXTI->FTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			EXTI->FTSR |= (1 << gpio_handle->gpio_config.gpio_pin_number);
 			// clear the corresponding RTSR bit
-			EXTI->RTSR &= ~(1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
-		} else if (gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_RT) {
+			EXTI->RTSR &= ~(1 << gpio_handle->gpio_config.gpio_pin_number);
+		} else if (gpio_handle->gpio_config.gpio_pin_mode == GPIO_MODE_IT_RT) {
 			// configure RTSR (Rising trigger selection register
-			EXTI->RTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			EXTI->RTSR |= (1 << gpio_handle->gpio_config.gpio_pin_number);
 			// clear the corresponding FTSR bit
-			EXTI->FTSR &= ~(1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
-		} else if (gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_IT_RFT) {
+			EXTI->FTSR &= ~(1 << gpio_handle->gpio_config.gpio_pin_number);
+		} else if (gpio_handle->gpio_config.gpio_pin_mode == GPIO_MODE_IT_RFT) {
 			// configure both FTSR and RTSR
-			EXTI->FTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
-			EXTI->RTSR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+			EXTI->FTSR |= (1 << gpio_handle->gpio_config.gpio_pin_number);
+			EXTI->RTSR |= (1 << gpio_handle->gpio_config.gpio_pin_number);
 		}
 		//2. configure the GPIO port selection in SYSCGF_EXTICR (Sys Config EXTI Control Register)
 		//   Which GPIO port should handle by which EXTIx line
-		uint8_t temp1 = gpio_handle->GPIO_PinConfig.gpio_pin_number / 4;
-		uint8_t temp2 = gpio_handle->GPIO_PinConfig.gpio_pin_number % 4;
-		uint8_t portcode = GPIO_BASEADDR_TO_CODE(gpio_handle->GPIOx);
+		uint8_t temp1 = gpio_handle->gpio_config.gpio_pin_number / 4;
+		uint8_t temp2 = gpio_handle->gpio_config.gpio_pin_number % 4;
+		uint8_t portcode = GPIO_BASEADDR_TO_CODE(gpio_handle->gpiox);
 		SYSCFG_PCLK_EN();
 		SYSCFG->EXTICR[temp1] = portcode << (temp2 * 4);
 
 		//3. enable the EXTI interrupt delivery using IMR (Interrupt Mask Register)
-		EXTI->IMR |= (1 << gpio_handle->GPIO_PinConfig.gpio_pin_number);
+		EXTI->IMR |= (1 << gpio_handle->gpio_config.gpio_pin_number);
 	}
 
 
 
 	// 2. configure the speed
 	temp = 0;
-	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_speed
-			<< (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
-	gpio_handle->GPIOx->OSPEEDR &= ~(0x3
-			<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
-	gpio_handle->GPIOx->OSPEEDR |= temp;
+	temp = (gpio_handle->gpio_config.gpio_pin_speed
+			<< (2 * gpio_handle->gpio_config.gpio_pin_number));
+	gpio_handle->gpiox->OSPEEDR &= ~(0x3
+			<< gpio_handle->gpio_config.gpio_pin_number);
+	gpio_handle->gpiox->OSPEEDR |= temp;
 
 
 	// 3. configure the pu-pd settings
 	temp = 0;
-	temp = (gpio_handle->GPIO_PinConfig.gpio_pin_pu_pd_control
-			<< (2 * gpio_handle->GPIO_PinConfig.gpio_pin_number));
-	gpio_handle->GPIOx->PUPDR &= ~(0x3
-			<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
-	gpio_handle->GPIOx->PUPDR |= temp;
+	temp = (gpio_handle->gpio_config.gpio_pin_pu_pd_control
+			<< (2 * gpio_handle->gpio_config.gpio_pin_number));
+	gpio_handle->gpiox->PUPDR &= ~(0x3
+			<< gpio_handle->gpio_config.gpio_pin_number);
+	gpio_handle->gpiox->PUPDR |= temp;
 
 
 	// 4. configure the optype
 	temp = 0;
-	temp = gpio_handle->GPIO_PinConfig.gpio_pin_op_type
-			<< gpio_handle->GPIO_PinConfig.gpio_pin_number;
-	gpio_handle->GPIOx->OTYPER &= ~(0x1
-			<< gpio_handle->GPIO_PinConfig.gpio_pin_number);
-	gpio_handle->GPIOx->OTYPER |= temp;
+	temp = gpio_handle->gpio_config.gpio_pin_op_type
+			<< gpio_handle->gpio_config.gpio_pin_number;
+	gpio_handle->gpiox->OTYPER &= ~(0x1
+			<< gpio_handle->gpio_config.gpio_pin_number);
+	gpio_handle->gpiox->OTYPER |= temp;
 
 	temp = 0;
 
 	// 5. configure the alt functionality
-	if (gpio_handle->GPIO_PinConfig.gpio_pin_mode == GPIO_MODE_ALTFN) {
+	if (gpio_handle->gpio_config.gpio_pin_mode == GPIO_MODE_ALTFN) {
 		uint8_t temp1, temp2;
-		temp1 = gpio_handle->GPIO_PinConfig.gpio_pin_number / 8;
-		temp2 = gpio_handle->GPIO_PinConfig.gpio_pin_number % 8;
-		gpio_handle->GPIOx->AFR[temp1] &= ~(0xF << (4 * temp2));
-		gpio_handle->GPIOx->AFR[temp1] |=
-				(gpio_handle->GPIO_PinConfig.gpio_pin_alt_fun << (4 * temp2));
+		temp1 = gpio_handle->gpio_config.gpio_pin_number / 8;
+		temp2 = gpio_handle->gpio_config.gpio_pin_number % 8;
+		gpio_handle->gpiox->AFR[temp1] &= ~(0xF << (4 * temp2));
+		gpio_handle->gpiox->AFR[temp1] |=
+				(gpio_handle->gpio_config.gpio_pin_alt_fun << (4 * temp2));
 
 	}
 }
