@@ -26,13 +26,13 @@
 
 #define DS1307_I2C_ADDRESS               0x68
 
-#define SUNDAY                           1
-#define MONDAY                           2
-#define TUESDAY                          3
-#define WEDNESDAY                        4
-#define THURSDAY                         5
-#define FRIDAY                           6
-#define SATURDAY                         7
+#define SUNDAY                           1;
+#define MONDAY                           2;
+#define TUESDAY                          3;
+#define WEDNESDAY                        4;
+#define THURSDAY                         5;
+#define FRIDAY                           6;
+#define SATURDAY                         7;
 
 typedef struct
 {
