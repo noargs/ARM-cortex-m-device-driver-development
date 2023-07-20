@@ -1,5 +1,38 @@
 #include "lcd.h"
 
+static void write_4_bits(uint8_t value);
+static void lcd_enable(void);
+
+void lcd_send_command(uint8_t cmd)
+{
+	// RS = 0 for LCD command
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RS, GPIO_PIN_RESET);
+
+	// RnW = 0 for write
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RW, GPIO_PIN_RESET);
+
+	// Higher nibbles first
+	write_4_bits(cmd >> 4);
+
+	// Lower nibbles second
+	write_4_bits(cmd & 0x0F);
+}
+
+void lcd_send_char(uint8_t data)
+{
+	// RS = 1 for LCD user Data
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RS, GPIO_PIN_SET);
+
+	// RnW = 0 for write
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RW, GPIO_PIN_RESET);
+
+	// Higher nibble first
+	write_4_bits(cmd >> 4);
+
+	// Lower nibble second
+	write_4_bits(cmd & 0x0F);
+}
+
 void lcd_init(void)
 {
 	//1. configure the GPIO pins used for LCD connections
@@ -72,5 +105,13 @@ static void write_4_bits(uint8_t value)
 	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_D7, ((value >> 3) & 0x1) );
 
 	lcd_enable();
+}
+
+static void lcd_enable(void)
+{
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_EN, GPIO_PIN_SET);
+	udelay(10);
+	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_EN, GPIO_PIN_RESET);
+	udelay(100); // execution time > 37 microseconds (Datasheet page: 24)
 }
 

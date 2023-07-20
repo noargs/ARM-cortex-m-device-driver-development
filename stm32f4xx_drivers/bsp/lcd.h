@@ -5,6 +5,7 @@
 
 // bsp exposed apis
 void lcd_init(void);
+void lcd_send_command(uint8_t cmd);
 
 // Application configurable items
 #define LCD_GPIO_PORT                    GPIOD
