@@ -2,6 +2,8 @@
 
 static void write_4_bits(uint8_t value);
 static void lcd_enable(void);
+static void mdelay(uint32_t count);
+static void udelay(uint32_t count);
 
 void lcd_send_command(uint8_t cmd)
 {
@@ -18,6 +20,13 @@ void lcd_send_command(uint8_t cmd)
 	write_4_bits(cmd & 0x0F);
 }
 
+/*
+ * This function sends a character to the LCD
+ * Here we used 4 bit parallel data transmission
+ * First higher nibble of the data will be sent on data line D4,D5,D6,D7
+ * Then lower nibble of the data on data line D4,D5,D6,D7
+ */
+
 void lcd_send_char(uint8_t data)
 {
 	// RS = 1 for LCD user Data
@@ -27,10 +36,19 @@ void lcd_send_char(uint8_t data)
 	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RW, GPIO_PIN_RESET);
 
 	// Higher nibble first
-	write_4_bits(cmd >> 4);
+	write_4_bits(data >> 4);
 
 	// Lower nibble second
-	write_4_bits(cmd & 0x0F);
+	write_4_bits(data & 0x0F);
+}
+
+void lcd_send_string(char * message)
+{
+	do
+	{
+		lcd_print_char((uint8_t)*message++);
+	}
+	while(*message != '\0');
 }
 
 void lcd_init(void)
@@ -91,9 +109,39 @@ void lcd_init(void)
 	udelay(150);
 
 	write_4_bits(0x3);
-
 	write_4_bits(0x2);
 
+	// `Function set` command
+	lcd_send_command(LCD_CMD_4DL_2N_5X8F);
+
+	// display ON and Cursor on
+	lcd_send_command(LCD_CMD_DON_CURON);
+
+	// Display clear
+	lcd_display_clear();
+
+	// Entry mode set
+	lcd_send_command(LCD_CMD_INCADD);
+
+}
+
+void lcd_display_clear(void)
+{
+	// Display clear
+	lcd_send_command(LCD_CMD_DIS_CLEAR);
+
+	// Datasheet page: 24
+	// Display command execution wait time is around 2ms
+	mdelay(2);
+}
+
+void lcd_display_return_home(void)
+{
+	lcd_send_command(LCD_CMD_DIS_RETURN_HOME);
+
+	// Datasheet page 24
+	// Return home command execution wait time is around 2ms
+	mdelay(2);
 }
 
 // writes 4 bits of data/command on to D4,D5,D6,D7 lines
@@ -115,3 +163,38 @@ static void lcd_enable(void)
 	udelay(100); // execution time > 37 microseconds (Datasheet page: 24)
 }
 
+static void mdelay(uint32_t count)
+{
+	for (uint32_t i = 0; i < (count * 1000); i++);
+}
+
+static void udelay(uint32_t count)
+{
+	for (uint32_t i = 0; i < (count * 1); i++);
+}
+
+//
+//
+
+/*
+ * Set LED to a specdified location given by row and column informtaion
+ * Row Number (1 to 2)
+ * Column number (1 to 16) Assuming a 2 X 16 characters display
+ */
+void lcd_set_cursor(uint8_t row, uint8_t column)
+{
+	column--;
+	switch(row)
+	{
+	case 1:
+		// set cursor to 1st row addrss and add index
+		lcd_send_command((column |= 0x80));
+		break;
+	case 2:
+		// set cursor to 2nd row address and add index
+		lcd_send_command((column |= 0xC0));
+		break;
+	default:
+		break;
+	}
+}

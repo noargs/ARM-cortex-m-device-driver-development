@@ -6,6 +6,10 @@
 // bsp exposed apis
 void lcd_init(void);
 void lcd_send_command(uint8_t cmd);
+void lcd_send_char(uint8_t data);
+void lcd_display_clear(void);
+void lcd_display_return_home(void);
+void lcd_print_string(char*);
 
 // Application configurable items
 #define LCD_GPIO_PORT                    GPIOD
@@ -22,7 +26,7 @@ void lcd_send_command(uint8_t cmd);
 #define LCD_CMD_DON_CURON                0x0E // Display ON, Cursor ON
 #define LCD_CMD_INCADD                   0x06 // Increment the RAM Address
 #define LCD_CMD_DIS_CLEAR                0x01 // Display clear
-#define LCD_CMF_DIS_RETURN_HOME          0x02 // Display return home
+#define LCD_CMD_DIS_RETURN_HOME          0x02 // Display return home
 
 
 #endif /* LCD_H_ */
