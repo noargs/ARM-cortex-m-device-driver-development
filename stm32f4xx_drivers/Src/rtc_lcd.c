@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "ds1307.h"
 
+#include "lcd.h"
+
 #define SYSTICK_TIM_CLK                  16000000UL
 
 // ARM Cortex M4 Generic User Guide page: 249
@@ -91,7 +93,11 @@ int main()
   RTC_time_t current_time;
   RTC_date_t current_date;
 
-  printf("RTC test\n");
+  //printf("RTC test\n");
+
+  lcd_init();
+
+  lcd_print_string("RTC Test...");
 
   if (ds1307_init())
   {

@@ -27,7 +27,7 @@ void lcd_send_command(uint8_t cmd)
  * Then lower nibble of the data on data line D4,D5,D6,D7
  */
 
-void lcd_send_char(uint8_t data)
+void lcd_print_char(uint8_t data)
 {
 	// RS = 1 for LCD user Data
 	GPIO_WriteToOutputPin(LCD_GPIO_PORT, LCD_GPIO_RS, GPIO_PIN_SET);
@@ -42,7 +42,7 @@ void lcd_send_char(uint8_t data)
 	write_4_bits(data & 0x0F);
 }
 
-void lcd_send_string(char * message)
+void lcd_print_string(char *message)
 {
 	do
 	{
@@ -58,10 +58,10 @@ void lcd_init(void)
 
 	lcd_signal.gpiox                               = LCD_GPIO_PORT;
 	lcd_signal.gpio_config.gpio_pin_mode           = GPIO_MODE_OUT;
+	lcd_signal.gpio_config.gpio_pin_number         = LCD_GPIO_RS;
 	lcd_signal.gpio_config.gpio_pin_op_type        = GPIO_OP_TYPE_PP;
 	lcd_signal.gpio_config.gpio_pin_pu_pd_control  = GPIO_NO_PUPD;
 	lcd_signal.gpio_config.gpio_pin_speed          = GPIO_SPEED_FAST;
-	lcd_signal.gpio_config.gpio_pin_number         = LCD_GPIO_RS;
 	GPIO_Init(&lcd_signal);
 
 	lcd_signal.gpio_config.gpio_pin_number         = LCD_GPIO_RW;
@@ -187,7 +187,7 @@ void lcd_set_cursor(uint8_t row, uint8_t column)
 	switch(row)
 	{
 	case 1:
-		// set cursor to 1st row addrss and add index
+		// set cursor to 1st row address and add index
 		lcd_send_command((column |= 0x80));
 		break;
 	case 2:
