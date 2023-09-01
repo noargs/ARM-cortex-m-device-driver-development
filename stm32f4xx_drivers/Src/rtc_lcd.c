@@ -87,6 +87,10 @@ char* date_to_string(RTC_date_t *rtc_date)
   return buf;
 }
 
+static void mdelay(uint32_t cnt)
+{
+	for(uint32_t i=0 ; i < (cnt * 1000); i++);
+}
 
 int main()
 {
@@ -95,9 +99,21 @@ int main()
 
   //printf("RTC test\n");
 
-  lcd_init();
+	lcd_init();
 
-  lcd_print_string("RTC Test...");
+  lcd_print_string("Hello Ibn");
+
+
+	mdelay(2000);
+
+	lcd_display_clear();
+	lcd_display_return_home();
+
+  lcd_print_string("Hello Ibn");
+
+
+
+
 
   if (ds1307_init())
   {

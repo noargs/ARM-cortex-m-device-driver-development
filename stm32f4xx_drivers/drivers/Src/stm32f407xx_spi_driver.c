@@ -65,6 +65,9 @@ void SPI_Init(SPI_Handle_t *spi_handle) {
 
 	// 6. configure the CPHA
 	temp_register |= spi_handle->SPIConfig.spi_cpha << SPI_CR1_CPHA;
+	
+	// 7. configure the Software slave Management - SSM
+	temp_register |= spi_handle->SPIConfig.spi_ssm << SPI_CR1_SSM;
 
 	spi_handle->SPIx->CR1 = temp_register;
 }

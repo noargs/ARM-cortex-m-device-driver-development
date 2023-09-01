@@ -12,14 +12,22 @@ void lcd_display_return_home(void);
 void lcd_print_string(char*);
 
 // Application configurable items
-#define LCD_GPIO_PORT                    GPIOD
-#define LCD_GPIO_RS                      GPIO_PIN_NO_0
-#define LCD_GPIO_RW                      GPIO_PIN_NO_1
-#define LCD_GPIO_EN                      GPIO_PIN_NO_2
-#define LCD_GPIO_D4                      GPIO_PIN_NO_3
-#define LCD_GPIO_D5                      GPIO_PIN_NO_4
-#define LCD_GPIO_D6                      GPIO_PIN_NO_5
-#define LCD_GPIO_D7                      GPIO_PIN_NO_6
+#define LCD_GPIO_PORT                    GPIOC
+#define LCD_GPIO_RS                      GPIO_PIN_NO_6
+#define LCD_GPIO_RW                      GPIO_PIN_NO_7
+#define LCD_GPIO_EN                      GPIO_PIN_NO_8
+#define LCD_GPIO_D4                      GPIO_PIN_NO_9
+#define LCD_GPIO_D5                      GPIO_PIN_NO_10
+#define LCD_GPIO_D6                      GPIO_PIN_NO_11
+#define LCD_GPIO_D7                      GPIO_PIN_NO_12
+
+//#define LCD_GPIO_RS                      GPIO_PIN_NO_0
+//#define LCD_GPIO_RW                      GPIO_PIN_NO_1
+//#define LCD_GPIO_EN                      GPIO_PIN_NO_2
+//#define LCD_GPIO_D4                      GPIO_PIN_NO_3
+//#define LCD_GPIO_D5                      GPIO_PIN_NO_4
+//#define LCD_GPIO_D6                      GPIO_PIN_NO_5
+//#define LCD_GPIO_D7                      GPIO_PIN_NO_6
 
 // LCD commands
 #define LCD_CMD_4DL_2N_5X8F              0x28 // 4bit Dataline, 2 lines, 5x8 dot font
