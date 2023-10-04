@@ -2,6 +2,13 @@
 #include <string.h>
 #include "stm32f407xx.h"
 
+//     -- [ I2C Master (STM32) and I2C Slave (Arduino board) communication ] --
+// User button on STM32 (Master) is pressed, Master send data to Slave (Arduino)
+// Data received on Arduino (Slave) will be displayed on Serial Monitor of Arduino IDE
+// 1. Use I2C SCL = 100KHz (SM)
+// 2. Use external pull up resistors (3.3kOhm) for SDA and SCL line
+// Note: if you don't have external pull up, you can try STM32 I2C pin's internal pull up resistors
+
 #define MY_ADDR                      0x61
 #define SLAVE_ADDR                   0x68
 
