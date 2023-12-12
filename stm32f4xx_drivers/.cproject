@@ -76,7 +76,7 @@
 					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.114557659.1864873715" name="lcd.h" rcbsApplicability="disable" resourcePath="bsp/lcd.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="uart_case.c|uart_tx.c|i2c_slave_tx_string_over_32bytes.c|i2c_slave_tx_string.c|i2c_master_rx_string_interrupt.c|led_user_button.c|i2c_master_rx_string.c|led_ext_button.c|led_ex_button_interrupt_falling_edge.c|spi_tx_testing.c|led_toggle_pushpull.c|led_toggle.c|slave_cmd_handling.c|led_toggle_opendrain.c|spi_message_recieve_interrupt.c|spi_txonly_arduino.c|main.c|i2c_master_tx_string.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
+						<entry excluding="rtc_lcd.c|uart_case.c|uart_tx.c|i2c_slave_tx_string_over_32bytes.c|i2c_master_rx_string_interrupt.c|led_user_button.c|i2c_master_rx_string.c|led_ext_button.c|led_ex_button_interrupt_falling_edge.c|spi_tx_testing.c|led_toggle_pushpull.c|led_toggle.c|slave_cmd_handling.c|led_toggle_opendrain.c|spi_message_recieve_interrupt.c|spi_txonly_arduino.c|main.c|i2c_master_tx_string.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Startup"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="bsp"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="drivers"/>

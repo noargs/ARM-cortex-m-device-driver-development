@@ -14,7 +14,7 @@ void setup() {
   // Define the LED pin as Output
   pinMode (LED, OUTPUT);
   
- // Start the I2C Bus as Slave on address 0X69
+ // Start the I2C Bus as Slave on address 0X68
   Wire.begin(MY_ADDR); 
   
   // Attach a function to trigger when something is received.

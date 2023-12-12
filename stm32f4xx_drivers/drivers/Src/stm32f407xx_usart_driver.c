@@ -146,7 +146,7 @@ void USART_ReceiveData(USART_Handle_t *usart_handle, uint8_t *rx_buffer, uint32_
 	  // receive 9bit data in a frame
 
 	  // check are we using @usart_parity_control or not
-	  if (usart_handle->usart_config.usart_parity_control == USART_WORDLEN_9BITS)
+	  if (usart_handle->usart_config.usart_parity_control == USART_PARITY_DISABLE)
 	  {
 		// no parity is used. so, all 9bits will be of user data
 
@@ -281,6 +281,7 @@ void USART_SetBaudRate(USART_RegDef_t *usartx, uint32_t baud_rate)
   if (usartx->CR1 & (1 << USART_CR1_OVER8))
   {
 	// OVER8=1, oversampling by 8
+	// When OVER8=1, the DIV_Fraction3 bit (i.e. Bit-3) is not considered and must be kept cleared.
 	fraction = (((fraction * 8) + 50) / 100) & ((uint8_t)0x07);
   }
   else

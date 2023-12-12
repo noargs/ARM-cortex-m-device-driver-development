@@ -77,8 +77,8 @@ typedef struct
 /*
  * @SPI_SSM
  */
-#define SPI_SSM_DI                            0 // Software Slave Managment
-#define SPI_SSM_EN                            1 // default Hardware slave managment
+#define SPI_SSM_DI                            0 // default Hardware slave managment
+#define SPI_SSM_EN                            1 // Software Slave Managment
 
 // SPI related status flags definitions
 #define SPI_TXE_FLAG                           (1 << SPI_SR_TXE)
